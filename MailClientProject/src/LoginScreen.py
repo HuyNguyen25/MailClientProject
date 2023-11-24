@@ -27,8 +27,8 @@ def login_screen(page: ft.Page):
     page.title  = "LOGIN"
     login_icon = ft.Image(
         src=f"res/icons/login.png",
-        width=100,
-        height=100,
+        width=125,
+        height=125,
         fit=ft.ImageFit.CONTAIN,
     )
     #Ui element
@@ -64,7 +64,8 @@ def login_screen(page: ft.Page):
     login_button = ft.TextButton(
         text="Login",
         on_click=login_button_clicked,
-        
+        width=100,
+        height=100
     )    
 
     #dialog

@@ -14,15 +14,15 @@ def load_sender():
 
 def send_email_screen(page: ft.Page):
     page.window_height = 900
-    page.window_width = 1280
+    page.window_width = 1320
     page.title="MAIN SCREEN"
     page.scroll=True
 
     #logo
     email_logo=Image(
         src=f"res/icons/email_logo.png",
-        width=80,
-        height=80,
+        width=70,
+        height=45,
         fit=ft.ImageFit.CONTAIN,
     )
 
@@ -65,13 +65,13 @@ def send_email_screen(page: ft.Page):
     )
 
     load_sender()
-    txt_sender=ft.TextField(label="From: ",hint_text="From", keyboard_type=KeyboardType.EMAIL,height=40)
+    txt_sender=ft.TextField(label="From: ",hint_text="From", keyboard_type=KeyboardType.EMAIL,height=45,cursor_height=20)
     txt_sender.value=sender
     txt_sender.read_only=True
-    txt_receivers=ft.TextField(label="To: ",hint_text="To", keyboard_type=KeyboardType.EMAIL,height=40)
-    txt_cc=ft.TextField(label="Cc:", hint_text="Cc", keyboard_type=KeyboardType.EMAIL,height=40)
-    txt_bcc=ft.TextField(label="Bcc:", hint_text="Bcc", keyboard_type=KeyboardType.EMAIL,height=40)
-    txt_subject=ft.TextField(label="Subject: ",hint_text="Subject",keyboard_type=KeyboardType.TEXT,height=40)
+    txt_receivers=ft.TextField(label="To: ",hint_text="To", keyboard_type=KeyboardType.EMAIL,height=45,cursor_height=20)
+    txt_cc=ft.TextField(label="Cc:", hint_text="Cc", keyboard_type=KeyboardType.EMAIL,height=45,cursor_height=20)
+    txt_bcc=ft.TextField(label="Bcc:", hint_text="Bcc", keyboard_type=KeyboardType.EMAIL,height=45,cursor_height=20)
+    txt_subject=ft.TextField(label="Subject: ",hint_text="Subject",keyboard_type=KeyboardType.TEXT,height=45,cursor_height=20)
     txt_content=ft.TextField(label="Content: ",hint_text="Content",multiline=True,keyboard_type=KeyboardType.TEXT,min_lines=14)
    
     text_attachments=ft.Text(value="Attachments: "+', '.join(fileNames))
@@ -114,7 +114,7 @@ def send_email_screen(page: ft.Page):
     btn_send=ft.IconButton(
         icon=ft.icons.SEND,
         icon_color="BLUE_500",
-        icon_size=60,
+        icon_size=30,
         on_click=send_button_clicked
     ) 
     
