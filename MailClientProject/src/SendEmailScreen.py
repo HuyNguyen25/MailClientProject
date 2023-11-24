@@ -14,7 +14,7 @@ def load_sender():
 
 def send_email_screen(page: ft.Page):
     page.window_height = 900
-    page.window_width = 1320
+    page.window_width = 1280
     page.title="MAIN SCREEN"
     page.scroll=True
 
