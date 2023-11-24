@@ -1,6 +1,6 @@
 {
-    "email": "1",
-    "password": "1",
+    "email": "nphuy",
+    "password": "1234",
     "smtp_server": "127.0.0.1",
     "smtp_port": "2225",
     "pop3_server": "127.0.0.1",
