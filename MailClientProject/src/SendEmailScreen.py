@@ -77,11 +77,14 @@ def send_email_screen(page: ft.Page):
     text_attachments=ft.Text(value="Attachments: "+', '.join(fileNames))
     
     def on_dialog_result(e):
-        for file in e.files:
-            filePaths.append(file.path)
-            fileNames.append(file.name)
-            text_attachments.value="Attachments: "+', '.join(fileNames)
-        page.update()    
+        try:
+            for file in e.files:
+                filePaths.append(file.path)
+                fileNames.append(file.name)
+                text_attachments.value="Attachments: "+', '.join(fileNames)
+            page.update()
+        except:
+            pass    
 
     file_picker=ft.FilePicker(on_result=on_dialog_result)
     page.overlay.append(file_picker)
