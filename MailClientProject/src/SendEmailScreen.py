@@ -58,7 +58,7 @@ class SendEmailScreen(ft.UserControl):
             hint_text="Content",
             multiline=True,
             keyboard_type=KeyboardType.TEXT,
-            min_lines=14
+            min_lines=12
         )
     
         self.text_attachments=ft.Text(value="Attachments: "+', '.join(self.fileNames))
@@ -115,6 +115,10 @@ class SendEmailScreen(ft.UserControl):
                 self.txt_cc,
                 self.txt_bcc,
                 self.txt_subject,
+                ft.Divider(
+                   thickness=2,
+                   color="BLACK" 
+                ),
                 ft.Row(
                 alignment=MainAxisAlignment.END,
                 controls=[

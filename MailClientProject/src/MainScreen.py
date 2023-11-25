@@ -8,12 +8,14 @@ class MainScreen(ft.UserControl):
     def __init__(self, page:ft.Page):
         super().__init__()
         self.page=page
+        self.page.bgcolor=ft.colors.WHITE
         self.screen_index=1
         self.option_container=ft.Container(
             content=SendEmailScreen.SendEmailScreen(page=page)
         )
 
     def build(self):
+        self.page.bgcolor="GREY_100"
         #logo
         self.email_logo=Image(
             src=f"res/icons/email_logo.png",
@@ -43,30 +45,37 @@ class MainScreen(ft.UserControl):
 
         #popup menu
         self.popup_menu=ft.PopupMenuButton(
-            icon=ft.Icon(name=ft.icons.MENU),
+            icon="MENU",
             items=[
                 ft.PopupMenuItem(
                     text="Compose Email",
+                    icon = "CREATE_OUTLINED",
                     on_click=compose_email_clicked
                 ),
                 ft.PopupMenuItem(
                     text="Inbox",
+                    icon="ALL_INBOX_OUTLINED",
                     on_click=inbox_clicked
                 ),
                 ft.PopupMenuItem(
                     text="Project",
+                    icon="CONSTRUCTION_OUTLINED"
                 ),
                 ft.PopupMenuItem(
                     text="Important",
+                    icon="LABEL_IMPORTANT_OUTLINE"
                 ),
                 ft.PopupMenuItem(
                     text="Work",
+                    icon="WORK_OUTLINE"
                 ),
                 ft.PopupMenuItem(
                     text="Spam",
+                    icon="WARNING_AMBER_OUTLINED"
                 ),
                 ft.PopupMenuItem(
                     text="Sign out",
+                    icon="LOGOUT",
                     on_click=exit_clicked
                 )
             ]

@@ -25,6 +25,8 @@ class LoginScreen(ft.UserControl):
     def __init__(self, page:ft.Page):
         super().__init__()
         self.page=page
+        self.page.bgcolor=ft.colors.BLUE_50
+
     def build(self):
         self.login_icon = ft.Image(
             src=f"res/icons/login.png",
@@ -48,22 +50,26 @@ class LoginScreen(ft.UserControl):
         )
         self.txt_smtp_server=ft.TextField(
             label="SMTP Sever: ",
-            keyboard_type=KeyboardType.NUMBER
+            keyboard_type=KeyboardType.NUMBER,
+            border=InputBorder.UNDERLINE
         )
         self.txt_smtp_server.value='127.0.0.1'
         self.txt_smtp_port=ft.TextField(
             label="SMTP Port: ",
-            keyboard_type=KeyboardType.NUMBER
+            keyboard_type=KeyboardType.NUMBER,
+            border=InputBorder.UNDERLINE
         )
         self.txt_smtp_port.value='2225'
         self.txt_pop3_server=ft.TextField(
             label="POP3 Sever: ",
-            keyboard_type=KeyboardType.NUMBER
+            keyboard_type=KeyboardType.NUMBER,
+            border=InputBorder.UNDERLINE
         )
         self.txt_pop3_server.value='127.0.0.1'
         self.txt_pop3_port=ft.TextField(
             label="POP3 Port: ",
-            keyboard_type=KeyboardType.NUMBER
+            keyboard_type=KeyboardType.NUMBER,
+            border=InputBorder.UNDERLINE
         )
         self.txt_pop3_port.value='3335'
         
@@ -130,7 +136,6 @@ class LoginScreen(ft.UserControl):
             width=60,
             height=60
         )
-
 
         return ft.Column(
             horizontal_alignment=CrossAxisAlignment.CENTER,
