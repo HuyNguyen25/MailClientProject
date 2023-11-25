@@ -16,14 +16,50 @@ class SendEmailScreen(ft.UserControl):
         self.fileNames=[]
 
     def build(self):
-        self.txt_sender=ft.TextField(label="From: ",hint_text="From", keyboard_type=KeyboardType.EMAIL,height=45,cursor_height=20)
+        self.txt_sender=ft.TextField(
+            label="From: ",
+            hint_text="From", 
+            keyboard_type=KeyboardType.EMAIL,
+            height=45,
+            cursor_height=20
+        )
         self.txt_sender.value=self.sender
         self.txt_sender.read_only=True
-        self.txt_receivers=ft.TextField(label="To: ",hint_text="To", keyboard_type=KeyboardType.EMAIL,height=45,cursor_height=20)
-        self.txt_cc=ft.TextField(label="Cc:", hint_text="Cc", keyboard_type=KeyboardType.EMAIL,height=45,cursor_height=20)
-        self.txt_bcc=ft.TextField(label="Bcc:", hint_text="Bcc", keyboard_type=KeyboardType.EMAIL,height=45,cursor_height=20)
-        self.txt_subject=ft.TextField(label="Subject: ",hint_text="Subject",keyboard_type=KeyboardType.TEXT,height=45,cursor_height=20)
-        self.txt_content=ft.TextField(label="Content: ",hint_text="Content",multiline=True,keyboard_type=KeyboardType.TEXT,min_lines=14)
+        self.txt_receivers=ft.TextField(
+            label="To: ",
+            hint_text="To", 
+            keyboard_type=KeyboardType.EMAIL,
+            height=45,
+            cursor_height=20
+        )
+        self.txt_cc=ft.TextField(
+            label="Cc:", 
+            hint_text="Cc", 
+            keyboard_type=KeyboardType.EMAIL,
+            height=45,
+            cursor_height=20
+        )
+        self.txt_bcc=ft.TextField(
+            label="Bcc:", 
+            hint_text="Bcc", 
+            keyboard_type=KeyboardType.EMAIL,
+            height=45,
+            cursor_height=20
+        )
+        self.txt_subject=ft.TextField(
+            label="Subject: ",
+            hint_text="Subject",
+            keyboard_type=KeyboardType.TEXT,
+            height=45,
+            cursor_height=20
+        )
+        self.txt_content=ft.TextField(
+            label="Content: ",
+            hint_text="Content",
+            multiline=True,
+            keyboard_type=KeyboardType.TEXT,
+            min_lines=14
+        )
     
         self.text_attachments=ft.Text(value="Attachments: "+', '.join(self.fileNames))
         

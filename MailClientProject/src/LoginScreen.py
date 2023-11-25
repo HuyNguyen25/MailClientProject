@@ -33,15 +33,38 @@ class LoginScreen(ft.UserControl):
             fit=ft.ImageFit.CONTAIN,
         )
         #Ui element
-        self.txt_account=ft.TextField(label ="Email: ", hint_text="Email Address", keyboard_type=KeyboardType.EMAIL)
-        self.txt_password=ft.TextField(label="Password: ", password = True, can_reveal_password=True, hint_text = "Password")
-        self.txt_smtp_server=ft.TextField(label="SMTP Sever: ",keyboard_type=KeyboardType.NUMBER)
+        self.txt_account=ft.TextField(
+            label ="Email: ", 
+            hint_text="Email Address", 
+            keyboard_type=KeyboardType.EMAIL, 
+            border=InputBorder.UNDERLINE
+        )
+        self.txt_password=ft.TextField(
+            label="Password: ", 
+            password = True, 
+            can_reveal_password=True, 
+            hint_text = "Password", 
+            border=InputBorder.UNDERLINE
+        )
+        self.txt_smtp_server=ft.TextField(
+            label="SMTP Sever: ",
+            keyboard_type=KeyboardType.NUMBER
+        )
         self.txt_smtp_server.value='127.0.0.1'
-        self.txt_smtp_port=ft.TextField(label="SMTP Port: ",keyboard_type=KeyboardType.NUMBER)
+        self.txt_smtp_port=ft.TextField(
+            label="SMTP Port: ",
+            keyboard_type=KeyboardType.NUMBER
+        )
         self.txt_smtp_port.value='2225'
-        self.txt_pop3_server=ft.TextField(label="POP3 Sever: ",keyboard_type=KeyboardType.NUMBER)
+        self.txt_pop3_server=ft.TextField(
+            label="POP3 Sever: ",
+            keyboard_type=KeyboardType.NUMBER
+        )
         self.txt_pop3_server.value='127.0.0.1'
-        self.txt_pop3_port=ft.TextField(label="POP3 Port: ",keyboard_type=KeyboardType.NUMBER)
+        self.txt_pop3_port=ft.TextField(
+            label="POP3 Port: ",
+            keyboard_type=KeyboardType.NUMBER
+        )
         self.txt_pop3_port.value='3335'
         
         def btn_login_clicked(e):
