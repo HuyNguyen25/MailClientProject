@@ -2,7 +2,6 @@ import flet as ft
 from flet import *
 import Email
 import json
-import LoginScreen
 
 def load_sender():
     f=open('res/configurations/login_info.json')
@@ -17,53 +16,6 @@ class SendEmailScreen(ft.UserControl):
         self.fileNames=[]
 
     def build(self):
-        #logo
-        self.email_logo=Image(
-            src=f"res/icons/email_logo.png",
-            width=70,
-            height=45,
-            fit=ft.ImageFit.CONTAIN,
-        )
-
-        def exit(e):
-            self.page.controls.pop()
-            self.page.add(LoginScreen.LoginScreen(page=self.page))
-            
-
-        #popup menu
-        self.popup_menu=ft.PopupMenuButton(
-            icon=ft.Icon(name=ft.icons.MENU),
-            items=[
-                ft.PopupMenuItem(
-                    text="Inbox",
-                ),
-                ft.PopupMenuItem(
-                    text="Project",
-                ),
-                ft.PopupMenuItem(
-                    text="Important",
-                ),
-                ft.PopupMenuItem(
-                    text="Work",
-                ),
-                ft.PopupMenuItem(
-                    text="Spam",
-                ),
-                ft.PopupMenuItem(
-                    text="Exit",
-                    on_click=exit
-                )
-            ]
-        )
-
-        self.header_row=ft.Row(
-            alignment=MainAxisAlignment.SPACE_BETWEEN,
-            controls=[
-                self.email_logo,
-                self.popup_menu
-            ]
-        )
-
         self.txt_sender=ft.TextField(label="From: ",hint_text="From", keyboard_type=KeyboardType.EMAIL,height=45,cursor_height=20)
         self.txt_sender.value=self.sender
         self.txt_sender.read_only=True
@@ -86,7 +38,7 @@ class SendEmailScreen(ft.UserControl):
                 pass    
 
         self.file_picker=ft.FilePicker(on_result=on_dialog_result)
-        self.page.overlay.append(self.file_picker)
+        #self.page.overlay.append(self.file_picker)
         #self.update()
 
         def attach_button_clicked(e):
@@ -121,7 +73,7 @@ class SendEmailScreen(ft.UserControl):
             #horizontal_alignment=CrossAxisAlignment.CENTER,
             alignment=MainAxisAlignment.START,
             controls=[
-                self.header_row,
+                self.file_picker,
                 self.txt_sender,
                 self.txt_receivers,
                 self.txt_cc,
