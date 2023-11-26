@@ -11,6 +11,7 @@ def write_login_info(email='',password='',smtp_server='',smtp_port='',pop3_serve
         'smtp_port':smtp_port,
         'pop3_server':pop3_server,
         'pop3_port':pop3_port,
+        'autoload':10
     }
     json_object=json.dumps(data,indent=4)
     with open('res/configurations/login_info.json', 'w') as json_file:

@@ -74,6 +74,10 @@ class MainScreen(ft.UserControl):
                     icon="WARNING_AMBER_OUTLINED"
                 ),
                 ft.PopupMenuItem(
+                    text="Settings",
+                    icon="SETTINGS_OUTLINED"
+                ),
+                ft.PopupMenuItem(
                     text="Sign out",
                     icon="LOGOUT",
                     on_click=exit_clicked
