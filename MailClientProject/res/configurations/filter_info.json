@@ -1,0 +1,14 @@
+{
+    "project": [
+        "a",
+        "b",
+        "d"
+    ],
+    "important": [
+        "a",
+        "b",
+        "c"
+    ],
+    "work": [],
+    "spam": []
+}

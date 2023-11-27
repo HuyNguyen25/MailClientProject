@@ -3,6 +3,7 @@ from flet import*
 import SendEmailScreen
 import InboxScreen
 import LoginScreen
+import SettingsScreen
 
 class MainScreen(ft.UserControl):
     def __init__(self, page:ft.Page):
@@ -11,7 +12,7 @@ class MainScreen(ft.UserControl):
         self.page.bgcolor=ft.colors.WHITE
         self.screen_index=1
         self.option_container=ft.Container(
-            content=SendEmailScreen.SendEmailScreen(page=page)
+            content=SendEmailScreen.SendEmailScreen(page=self.page)
         )
 
     def build(self):
@@ -37,6 +38,12 @@ class MainScreen(ft.UserControl):
                 self.option_container.content=InboxScreen.InboxScreen(page=self.page)
                 self.update()
 
+        def settings_clicked(e):
+            if(self.screen_index!=7):
+                self.screen_index=7
+                self.option_container.content=SettingsScreen.SettingsScreen(page=self.page)
+                self.update()
+        
         def exit_clicked(e):
             #self.page.controls.pop()
             self.page.controls.pop()
@@ -75,7 +82,8 @@ class MainScreen(ft.UserControl):
                 ),
                 ft.PopupMenuItem(
                     text="Settings",
-                    icon="SETTINGS_OUTLINED"
+                    icon="SETTINGS_OUTLINED",
+                    on_click=settings_clicked
                 ),
                 ft.PopupMenuItem(
                     text="Sign out",
@@ -85,7 +93,7 @@ class MainScreen(ft.UserControl):
             ]
         )
 
-        self.header_row=ft.Row(
+        header_row=ft.Row(
             alignment=MainAxisAlignment.SPACE_BETWEEN,
             controls=[
                 self.email_logo,
@@ -96,7 +104,7 @@ class MainScreen(ft.UserControl):
         return ft.Column(
             alignment=CrossAxisAlignment.CENTER,
             controls=[
-                self.header_row,
+                header_row,
                 self.option_container
             ]
         )

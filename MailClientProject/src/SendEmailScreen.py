@@ -2,6 +2,7 @@ import flet as ft
 from flet import *
 import Email
 import json
+import re
 
 def load_sender():
     f=open('res/configurations/login_info.json')
@@ -74,8 +75,7 @@ class SendEmailScreen(ft.UserControl):
                 pass    
 
         self.file_picker=ft.FilePicker(on_result=on_dialog_result)
-        #self.page.overlay.append(self.file_picker)
-        #self.update()
+
 
         def attach_button_clicked(e):
             self.file_picker.pick_files(allow_multiple=True)
@@ -86,14 +86,23 @@ class SendEmailScreen(ft.UserControl):
         )
 
         def send_button_clicked(e):
+            delimiters=',|;|/|&'
+            space=' '
             if self.txt_sender.value!='' and self.txt_receivers!='':
+                str_sender=self.txt_sender.value
+                str_receivers=self.txt_receivers.value
+                str_subject=self.txt_subject.value
+                str_message=self.txt_content.value
+                str_cc=self.txt_cc.value
+                str_bcc=self.txt_bcc.value
+                
                 email = Email.Email(
-                    sender=self.txt_sender.value,
-                    receivers=self.txt_receivers.value.split(', '),
-                    subject=self.txt_subject.value,
-                    message=self.txt_content.value,
-                    CC=self.txt_cc.value.split(', ') if self.txt_cc.value!='' else [],
-                    BCC=self.txt_bcc.value.split(', ') if self.txt_bcc.value!='' else [],
+                    sender=str_sender.strip(space),
+                    receivers=[word.strip(space) for word in re.split(delimiters,str_receivers) if word.strip(space)],
+                    subject=str_subject,
+                    message=str_message,
+                    CC=[word.strip(space) for word in re.split(delimiters,str_cc) if word.strip(space)],
+                    BCC=[word.strip(space) for word in re.split(delimiters,str_bcc) if word.strip(space)],
                     attachments=self.filePaths
                 )
                 email.send_emails()
