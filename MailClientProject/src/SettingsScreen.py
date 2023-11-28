@@ -82,6 +82,21 @@ class SettingsScreen(ft.UserControl):
             alignment=MainAxisAlignment.CENTER,
             horizontal_alignment=CrossAxisAlignment.CENTER,
             controls=[
+                ft.Text(
+                    value="Emails sent from accounts in Project field will be moved to Project"
+                ),
+                ft.Text(
+                    value="Emails whose subjects contain words in Important field will be moved to Important"
+                ),
+                ft.Text(
+                    value="Emails whose contents contain words in Work field will be moved to Work"
+                ),
+                ft.Text(
+                    value="Emails whose subjects or contents contain words in Spam will be moved to Spam"
+                ),
+                ft.Text(
+                    value="Each items in the fields below is separated by , or ;"
+                ),
                 self.txt_project_filter,
                 self.txt_important_filter,
                 self.txt_work_filter,
