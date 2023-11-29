@@ -55,13 +55,17 @@ class InboxScreen(ft.UserControl):
             self.load_message_paths()
             self.load_message_items()
             update_inbox_list()
+            self.update()
 
         self.btn_retrieve_emails=ft.IconButton(
             icon="CLOUD_DOWNLOAD_OUTLINED",
             on_click=retrieve_emails_button_clicked,
         )
 
-        self.lv_inbox_list=ft.ListView(expand=False,spacing=5)
+        self.lv_inbox_list=ft.ListView(expand=False,spacing=5,width=500)
+        self.txt_chosen_email=ft.Text(
+            value=''
+        )
 
         def update_inbox_list():
             for item in self.message_list:
@@ -70,13 +74,9 @@ class InboxScreen(ft.UserControl):
                     value=item.header
                 )
 
-                content=ft.Text(
-                    value=''
-                )
-
                 def read_button_clicked(e):
-                    content.value=item.content+'\n Attachment paths: \n'+item.attachments
-                    content.update()
+                    self.txt_chosen_email.value=item.header+'\n\n'+item.content+'\n\nAttachment paths: \n'+item.attachments
+                    self.update()
                 
                 btn_read=ft.TextButton(
                     text="Read",
@@ -84,8 +84,8 @@ class InboxScreen(ft.UserControl):
                 )
 
                 def close_button_clicked(e):
-                    content.value=''
-                    content.update()
+                    self.txt_chosen_email.value=''
+                    self.update()
                 
                 btn_close=TextButton(
                     text="Close",
@@ -97,7 +97,6 @@ class InboxScreen(ft.UserControl):
                         content=ft.Column(
                             controls=[
                                 title,
-                                content,
                                 ft.Row(
                                     controls=[
                                         btn_read,
@@ -108,8 +107,7 @@ class InboxScreen(ft.UserControl):
                         )
                     )
                 )
-                
-                
+                                
         update_inbox_list()
         
         return ft.Column(
@@ -120,6 +118,16 @@ class InboxScreen(ft.UserControl):
                         self.btn_retrieve_emails
                     ]
                 ),
-                self.lv_inbox_list
+                ft.Row(
+                   controls=[
+                       self.lv_inbox_list,
+                       ft.Divider(
+                           thickness=1,
+                           color="GRAY"
+                       ),
+                       self.txt_chosen_email
+                   ]
+                )
+                
             ]
         )
