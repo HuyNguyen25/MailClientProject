@@ -68,6 +68,7 @@ class InboxScreen(ft.UserControl):
         )
 
         def update_inbox_list():
+            self.lv_inbox_list.controls.clear()
             for item in self.message_list:
 
                 title=ft.Text(
@@ -125,7 +126,11 @@ class InboxScreen(ft.UserControl):
                            thickness=1,
                            color="GRAY"
                        ),
-                       self.txt_chosen_email
+                       ft.Column(
+                            controls=[
+                                self.txt_chosen_email
+                            ]   
+                       )                       
                    ]
                 )
                 
