@@ -39,7 +39,7 @@ class EmailPostOfficer:
                     
         return ""     
     
-    def __get_attach_file_name(self, receive_message):
+    def __get_attach_file_name(self, receive_message, email_type):
         receive_mail = receive_message.encode()
         receive_content = receive_mail[(receive_mail.find("\r\n".encode())+2):]
         mail_message = message_from_bytes(receive_content)
@@ -55,12 +55,12 @@ class EmailPostOfficer:
                     continue
                 if part.get_content_type() == 'application/octet-stream':
                     file_name = os.path.basename(part.get_filename()) 
-                    full_path = os.path.join('res', 'emails', self.__account, 'inbox', From, boundary, file_name)
+                    full_path = os.path.join('res', 'emails', self.__account, email_type, From, boundary, file_name)
                     list_file.append(full_path)
                     
         return list_file    
     
-    def __receive_attach_file(self, receive_message):
+    def __receive_attach_file(self, receive_message, email_type):
         receive_mail = receive_message.encode()
         receive_content = receive_mail[(receive_mail.find("\r\n".encode())+2):]
         mail_message = message_from_bytes(receive_content)
@@ -76,12 +76,12 @@ class EmailPostOfficer:
                 if part.get_content_type() == 'application/octet-stream':
                     file_name = os.path.basename(part.get_filename())
 
-                    full_path = os.path.join('res', 'emails', self.__account, 'inbox', From, boundary, file_name)
-                    os.makedirs(os.path.dirname(full_path), exist_ok=True)                    
-                    with open(full_path, 'wb') as file:
+                    file_path = os.path.join('res', 'emails', self.__account, email_type, From, boundary, file_name)
+                    os.makedirs(os.path.dirname(file_path), exist_ok=True)                    
+                    with open(file_path, 'wb') as file:
                         file.write(part.get_payload(decode = True))
     
-    def __receive_content(self, receive_message):
+    def __receive_content(self, receive_message, email_type):
         receive_mail = receive_message.encode()
         receive_content = receive_mail[(receive_mail.find("\r\n".encode())+2):]
         mail_message = message_from_bytes(receive_content)
@@ -97,9 +97,9 @@ class EmailPostOfficer:
         
         Body = self.__get_body(mail_message)
 
-        Attach_file_name = self.__get_attach_file_name(receive_message)
+        Attach_file_name = self.__get_attach_file_name(receive_message, email_type)
 
-        file_path = os.path.join('res', 'emails', self.__account, 'inbox', From, boundary, 'content.txt')
+        file_path = os.path.join('res', 'emails', self.__account, email_type, From, boundary, 'content.txt')
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, 'w') as file:
             if Bcc == None:
@@ -144,8 +144,8 @@ class EmailPostOfficer:
             pop3_socket.send(retrieve_command.encode())
             retr_size = int(self.__get_retrieve_size(list_response,i))
             response = pop3_socket.recv(retr_size*8+100).decode()
-            self.__receive_content(response)
-            self.__receive_attach_file(response)
+            self.__receive_content(receive_message=response,email_type='inbox')
+            self.__receive_attach_file(receive_message=response,email_type='inbox')
             
         #Send DELE to delete message on server
         for i in range(1, num_message + 1):

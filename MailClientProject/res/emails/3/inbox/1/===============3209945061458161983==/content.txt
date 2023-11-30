@@ -1,7 +1,0 @@
-Date: Tuesday, 28/11/2023, at 21:14:16
-From: 1
-To: 2
-Subject: hello
-Cc: 3, 4
-hello
-res\emails\3\inbox\1\===============3209945061458161983==\bt.txt
