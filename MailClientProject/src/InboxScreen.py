@@ -68,13 +68,24 @@ class InboxScreen(ft.UserControl):
     def build(self):
         self.lv_message_list=ft.ListView(controls=[],expand=False,spacing=5)
         self.message_paths=[]
+        def remove_empty_folders():
+            folder_list=[]
+            for foldername, subfolders, filenames in os.walk(f'res\emails\{self.account}'): 
+                folder_list.append(foldername)
+                
+            folder_list=reversed(folder_list)
+            for folder in folder_list:
+                if len(os.listdir(folder))==0:
+                     os.rmdir(folder)
+
         def delete_message(del_mess):
             os.remove(del_mess.path)
-            attachments=del_mess.attachments.split('\n')
+            attachments=[attachment.strip() for attachment in del_mess.attachments.split('\n') if attachment.strip()!='']
             for item in attachments:
                 os.remove(item)
             self.lv_message_list.controls.remove(del_mess)
             self.message_paths.remove(del_mess.path)
+            remove_empty_folders()
             self.update()
 
         def load_message_paths():
@@ -99,9 +110,7 @@ class InboxScreen(ft.UserControl):
                             attachments=attachments,
                             del_func=delete_message
                         )
-                    )
-                    
-
+                    )              
 
         self.load_account_and_time_info()
         load_message_paths()
