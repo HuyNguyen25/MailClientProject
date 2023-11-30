@@ -8,6 +8,28 @@ def load_sender():
     f=open('res/configurations/login_info.json')
     return json.load(f)['email']
 
+
+class ChosenFile(ft.UserControl):
+    def __init__(self, file_name,file_path, remove_file):
+        super().__init__()
+        self.name=file_name
+        self.path=file_path
+        self.remove_file=remove_file
+    def build(self):
+        def del_button_clicked(e):
+            self.remove_file(self)
+        return ft.Row(
+            controls=[
+                ft.Text(
+                    value=self.name
+                ),
+                ft.IconButton(
+                    icon="DELETE_FOREVER_OUTLINED",
+                    on_click=del_button_clicked
+                )
+            ]
+        )
+
 class SendEmailScreen(ft.UserControl):
     def __init__(self, page:ft.Page):
         super().__init__()
@@ -62,14 +84,26 @@ class SendEmailScreen(ft.UserControl):
             min_lines=12
         )
     
-        self.text_attachments=ft.Text(value="Attachments: "+', '.join(self.fileNames))
-        
+        self.row_attachments=ft.Row(
+            controls=[
+            ]
+        )
+        def remove_file(chosen_file):
+            self.row_attachments.controls.remove(chosen_file)
+            self.fileNames.remove(chosen_file.name)
+            self.filePaths.remove(chosen_file.path)
+            self.update()
+
+
         def on_dialog_result(e):
             try:
                 for file in e.files:
                     self.filePaths.append(file.path)
                     self.fileNames.append(file.name)
-                    self.text_attachments.value="Attachments: "+', '.join(self.fileNames)
+
+                    self.row_attachments.controls.append(
+                        ChosenFile(file_name=file.name,file_path=file.path,remove_file=remove_file)
+                    )
                 self.update()
             except:
                 pass    
@@ -134,11 +168,10 @@ class SendEmailScreen(ft.UserControl):
                     self.btn_attach
                 ]
                 ),
-                ft.Row(
-                controls=[
-                    self.text_attachments
-                ]
+                ft.Text(
+                    value="Attachments:"
                 ),
+                self.row_attachments,
                 self.txt_content,
                 ft.Row(
                     alignment=MainAxisAlignment.END,

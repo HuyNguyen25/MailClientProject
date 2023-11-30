@@ -1,7 +1,0 @@
-1. Truy cập www.yahoo.com thì phân giải như thế nào (nếu ở trong trường). 
-2. Như trên nhưng ở nhà
-3. Đổi local dns sever thì quá trình phân giải tên miền có khác không?
-
-Trên terminal:
-Cấu hình lại dns: 1.1.1.1, 8.8.8.8
-nslookup/...
