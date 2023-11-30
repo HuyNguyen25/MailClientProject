@@ -29,6 +29,16 @@ class MessageItem(ft.UserControl):
             self.del_func(self)
 
         return ft.Container(
+            bgcolor="#E0E0E0",
+            padding=ft.padding.all(10),
+            shadow=ft.BoxShadow(
+                spread_radius=2,
+                blur_radius=10,
+                color=ft.colors.BLUE_GREY_500,
+                offset=ft.Offset(0, 0),
+                blur_style=ft.ShadowBlurStyle.NORMAL,
+            ),
+            border_radius=ft.border_radius.all(33),
             content=ft.Column(
                 controls=[
                     self.txt_showing_item,
