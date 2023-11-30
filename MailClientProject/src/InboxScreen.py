@@ -70,7 +70,8 @@ class InboxScreen(ft.UserControl):
         self.message_paths=[]
         def remove_empty_folders():
             folder_list=[]
-            for foldername, subfolders, filenames in os.walk(f'res\emails\{self.account}'): 
+            root_folder=os.path.join('res','emails',self.account)
+            for foldername, subfolders, filenames in os.walk(root_folder): 
                 folder_list.append(foldername)
                 
             folder_list=reversed(folder_list)
@@ -90,10 +91,11 @@ class InboxScreen(ft.UserControl):
 
         def load_message_paths():
             self.message_paths.clear()
-            for foldername, subfolders, filenames in os.walk(f'res\emails\{self.account}\inbox'): 
+            root_folder=os.path.join('res','emails',self.account,'inbox')
+            for foldername, subfolders, filenames in os.walk(root_folder): 
                 for filename in filenames:
                     if filename=='content.txt':
-                        self.message_paths.append(f'{foldername}\{filename}')
+                        self.message_paths.append(os.path.join(foldername,filename))
         
         def load_message_items():  
             self.lv_message_list.controls.clear()
