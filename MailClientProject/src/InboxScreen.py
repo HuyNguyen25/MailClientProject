@@ -15,7 +15,8 @@ class MessageItem(ft.UserControl):
         
     def build(self):
         self.txt_showing_item=ft.Text(
-            value=self.header
+            value=self.header,
+            selectable=True
         )
         def read_button_click(e):
             self.txt_showing_item.value=self.header+'\n\n'+self.content+'\n\nAttachments: \n'+self.attachments
@@ -29,6 +30,16 @@ class MessageItem(ft.UserControl):
             self.del_func(self)
 
         return ft.Container(
+            bgcolor="#E0E0E0",
+            padding=ft.padding.all(10),
+            shadow=ft.BoxShadow(
+                spread_radius=2,
+                blur_radius=10,
+                color=ft.colors.BLUE_GREY_500,
+                offset=ft.Offset(0, 0),
+                blur_style=ft.ShadowBlurStyle.NORMAL,
+            ),
+            border_radius=ft.border_radius.all(33),
             content=ft.Column(
                 controls=[
                     self.txt_showing_item,
@@ -66,7 +77,11 @@ class InboxScreen(ft.UserControl):
        self.refreshing_time=data['autoload']
 
     def build(self):
-        self.lv_message_list=ft.ListView(controls=[],expand=False,spacing=5)
+        self.lv_message_list=ft.ListView(
+            controls=[],
+            expand=False,
+            spacing=15
+        )
         self.message_paths=[]
         def remove_empty_folders():
             folder_list=[]

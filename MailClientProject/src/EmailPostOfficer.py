@@ -5,7 +5,7 @@ import json
 from socket import *
 
 class EmailPostOfficer:
-    def __init__(self, account = '', time = ''):
+    def __init__(self, account = '', time = None):
         self.__account = account
         self.__refresh_time = time
         
