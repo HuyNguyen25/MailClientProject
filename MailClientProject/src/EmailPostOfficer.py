@@ -103,18 +103,15 @@ class EmailPostOfficer:
         else:
             mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\nBcc: {Bcc}\r\n{Body}\r\n'
 
-        folders_move = filtering(mail_content)
+        folder_move = filtering(mail_content)
         
         Attach_file_name = self.__get_attach_file_name(receive_message, email_type)
-        for folder in folders_move:
-
-
-            file_path = os.path.join('res', 'emails', self.__account, folder, From, boundary, 'content.txt')
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
-            with open(file_path, 'w') as file:
-                file.write(mail_content)
-                for file_name in Attach_file_name:
-                    file.write(f'{file_name}\n')
+        file_path = os.path.join('res', 'emails', self.__account, folder_move, From, boundary, 'content.txt')
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, 'w') as file:
+            file.write(mail_content)
+            for file_name in Attach_file_name:
+                file.write(f'{file_name}\n')
                               
         
     def receive_mail (self, pop3_server = '127.0.0.1', pop3_port = 3335):
@@ -168,7 +165,7 @@ class EmailPostOfficer:
 
 
 def filtering(data):
-    res = ['in']
+    
     name = 'res/configurations/filter_info.json'
     with open(name, 'r') as file:
         filter_config = json.load(file)
@@ -187,19 +184,20 @@ def filtering(data):
             keywords = filter_config[folder][:-1]
             types = types.split(' ')
 
-            for type in types:
+            for _type in types:
                 data = ''
-                if (type == 'name'):
+                if (_type == 'name'):
                     data = sender
-                if (type == 'subj'):
+                if (_type == 'subj'):
                     data = subject
-                if (type == 'ctn'):
+                if (_type == 'ctn'):
                     data = body
 
                 if filter_keyword(data, keywords):
-                    res.append(folder)
+                    file.close()
+                    return folder
     file.close()
-    return res
+    return "inbox"
 
 
 def filter_keyword(data, keywords):

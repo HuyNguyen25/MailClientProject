@@ -2,9 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\res",
-    "\\res\\configurations",
+    "\\res\\emails",
+    "\\res\\emails\\12@gmail.com",
+    "\\res\\emails\\12@gmail.com\\inbox",
+    "\\res\\emails\\12@gmail.com\\inbox\\12@gmail.com\\===============3507973635097819997==",
+    "\\res\\emails\\work@gmail.com",
+    "\\res\\emails\\work@gmail.com\\inbox\\work@gmail.com",
     "\\res\\icons",
     "\\src"
   ],
+  "SelectedNode": "\\src\\Email.py",
   "PreviewInSolutionExplorer": false
 }
