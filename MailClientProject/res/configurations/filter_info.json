@@ -1,11 +1,9 @@
 {
     "project": [
-        "3",
-        "4"
+        "123",
+        "23"
     ],
     "important": [],
     "work": [],
-    "spam": [
-        "spam"
-    ]
+    "spam": []
 }
