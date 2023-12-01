@@ -15,7 +15,8 @@ class MessageItem(ft.UserControl):
         
     def build(self):
         self.txt_showing_item=ft.Text(
-            value=self.header
+            value=self.header,
+            selectable=True
         )
         def read_button_click(e):
             self.txt_showing_item.value=self.header+'\n\n'+self.content+'\n\nAttachments: \n'+self.attachments
