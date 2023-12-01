@@ -5,7 +5,7 @@ import json
 from socket import *
 
 class EmailPostOfficer:
-    def __init__(self, account = '', time = None):
+    def __init__(self, account = '', time = ''):
         self.__account = account
         self.__refresh_time = time
         
@@ -105,11 +105,11 @@ class EmailPostOfficer:
 
         folders_move = filtering(mail_content)
         
-
         Attach_file_name = self.__get_attach_file_name(receive_message, email_type)
-
         for folder in folders_move:
-            file_path = os.path.join('res', 'emails', self.__account, email_type, From, boundary, 'content.txt')
+
+
+            file_path = os.path.join('res', 'emails', self.__account, folder, From, boundary, 'content.txt')
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
             with open(file_path, 'w') as file:
                 file.write(mail_content)
@@ -168,7 +168,7 @@ class EmailPostOfficer:
 
 
 def filtering(data):
-    res = []
+    res = ['in']
     name = 'res/configurations/filter_info.json'
     with open(name, 'r') as file:
         filter_config = json.load(file)

@@ -1,14 +1,18 @@
 {
     "project": [
-        "a",
-        "b",
-        "d"
+      "work",
+      "name"
     ],
     "important": [
-        "a",
-        "b",
-        "c"
+      "spam",
+      "subj"
     ],
-    "work": [],
-    "spam": []
+    "work": [
+      "spam",
+      "ctn"
+    ],
+    "spam": [
+      "sapm",
+      "subj ctn"
+    ]
 }

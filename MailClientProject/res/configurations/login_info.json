@@ -1,6 +1,6 @@
 {
-    "email": "mail@gmail.com",
-    "password": "123",
+    "email": "1",
+    "password": "2",
     "smtp_server": "127.0.0.1",
     "smtp_port": "2225",
     "pop3_server": "127.0.0.1",

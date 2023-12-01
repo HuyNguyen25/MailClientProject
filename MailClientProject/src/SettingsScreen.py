@@ -20,7 +20,7 @@ class SettingsScreen(ft.UserControl):
             hint_text="Emails sent from these accounts will be moved to Project",
             multiline=True,
             prefix_icon="CONSTRUCTION_OUTLINED",
-            value=', '.join(self.data['project'])
+            value=', '.join(self.data['project'][:-1])
         )
 
 
@@ -29,7 +29,7 @@ class SettingsScreen(ft.UserControl):
             hint_text="Emails whose subjects contain these words will be moved to Important",
             multiline=True,
             prefix_icon="LABEL_IMPORTANT_OUTLINE",
-            value=', '.join(self.data['important'])
+            value=', '.join(self.data['important'][:-1])
         )
         
         self.txt_work_filter=ft.TextField(
@@ -37,7 +37,7 @@ class SettingsScreen(ft.UserControl):
             hint_text="Emails whose contents contain these words will be moved to Work",
             multiline=True,
             prefix_icon="WORK_OUTLINE",
-            value=', '.join(self.data['work'])
+            value=', '.join(self.data['work'][:-1])
         )
 
         self.txt_spam_filter=ft.TextField(
@@ -45,7 +45,7 @@ class SettingsScreen(ft.UserControl):
             hint_text="Emails whose subjects or contents contain these words will be moved to Spam",
             multiline=True,
             prefix_icon="WARNING_AMBER_OUTLINED",
-            value=', '.join(self.data['spam'])
+            value=', '.join(self.data['spam'][:-1])
         )
 
         def done_button_clicked(e):
@@ -60,12 +60,7 @@ class SettingsScreen(ft.UserControl):
             important_items=[word.strip(space) for word in re.split(delimiters,important) if word.strip(space)]
             work_items=[word.strip(space) for word in re.split(delimiters,work) if word.strip(space)]
             spam_items=[word.strip(space) for word in re.split(delimiters,spam) if word.strip(space)]
-            
-            project_items.append("name")
-            important_items.append("sbj")
-            work_items.append("ctn")
-            spam_items.append("sbj ctn")
-            
+       
             self.data={
                 "project":project_items,
                 "important":important_items,
