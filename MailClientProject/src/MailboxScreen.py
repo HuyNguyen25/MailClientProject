@@ -148,12 +148,12 @@ class MailboxScreen(ft.UserControl):
         return ft.Column(            
             controls=[
                 ft.Row(
-                    alignment=MainAxisAlignment.CENTER,
+                    alignment=MainAxisAlignment.START,
                     controls=[
                         ft.Container(
                             content=ft.Text(
                                 value=self.mail_box_folder.capitalize(),
-                                size=30,
+                                size=20,
                                 color=ft.colors.BLACK
                             ),
                             bgcolor=ft.colors.GREY_300,
