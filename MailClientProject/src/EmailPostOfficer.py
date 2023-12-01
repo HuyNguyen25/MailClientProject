@@ -194,7 +194,7 @@ class EmailPostOfficer:
                 if folder == 'spam':
                     data = subject + '\n' + body
 
-                if self.__filter_keyword(data, keywords):
+                if keywords != [] and self.__filter_keyword(data, keywords):
                     file.close()
                     return folder
         file.close()
