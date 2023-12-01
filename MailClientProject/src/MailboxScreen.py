@@ -156,7 +156,9 @@ class MailboxScreen(ft.UserControl):
                                 size=30,
                                 color=ft.colors.BLACK
                             ),
-                            bgcolor=ft.colors.GREY_50
+                            bgcolor=ft.colors.GREY_200,
+                            padding=16,
+                            border=ft.border.all(width=1)
                         )
                     ]
                 ),
