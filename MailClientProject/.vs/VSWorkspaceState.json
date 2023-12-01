@@ -2,15 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\res",
+    "\\res\\configurations",
     "\\res\\emails",
-    "\\res\\emails\\12@gmail.com",
-    "\\res\\emails\\12@gmail.com\\inbox",
-    "\\res\\emails\\12@gmail.com\\inbox\\12@gmail.com\\===============3507973635097819997==",
-    "\\res\\emails\\work@gmail.com",
-    "\\res\\emails\\work@gmail.com\\inbox\\work@gmail.com",
+    "\\res\\emails\\1",
+    "\\res\\emails\\1\\inbox",
+    "\\res\\emails\\1\\inbox\\2",
+    "\\res\\emails\\1\\inbox\\2\\===============3038738982437614862==",
     "\\res\\icons",
     "\\src"
   ],
-  "SelectedNode": "\\src\\Email.py",
+  "SelectedNode": "\\src\\EmailPostOfficer.py",
   "PreviewInSolutionExplorer": false
 }

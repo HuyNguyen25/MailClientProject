@@ -1,3 +1,4 @@
+from ast import keyword
 from email import message_from_bytes
 import os.path
 import re
@@ -194,7 +195,7 @@ class EmailPostOfficer:
                 if folder == 'spam':
                     data = subject + '\n' + body
 
-                if keywords != [] and self.__filter_keyword(data, keywords):
+                if self.__filter_keyword(data, keywords) and keywords:
                     file.close()
                     return folder
         file.close()
@@ -202,6 +203,6 @@ class EmailPostOfficer:
 
 
     def __filter_keyword(self, data, keywords):
-        pattern = re.compile(r'\b(?:' + '|'.join(re.escape(keyword)
-                            for keyword in keywords) + r')\b', flags=re.IGNORECASE)
+        pattern = re.compile('|'.join(re.escape(keyword)
+                                  for keyword in keywords), flags=re.IGNORECASE)
         return pattern.search(data)
