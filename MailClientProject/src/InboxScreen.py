@@ -76,7 +76,11 @@ class InboxScreen(ft.UserControl):
        self.refreshing_time=data['autoload']
 
     def build(self):
-        self.lv_message_list=ft.ListView(controls=[],expand=False,spacing=5)
+        self.lv_message_list=ft.ListView(
+            controls=[],
+            expand=False,
+            spacing=15
+        )
         self.message_paths=[]
         def remove_empty_folders():
             folder_list=[]
