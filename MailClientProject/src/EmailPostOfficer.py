@@ -1,6 +1,7 @@
 from email import message_from_bytes
 import os.path
 import re
+import json
 from socket import *
 
 class EmailPostOfficer:
@@ -96,20 +97,24 @@ class EmailPostOfficer:
         Bcc = mail_message['Bcc']
         
         Body = self.__get_body(mail_message)
+        
+        if Bcc == None:
+            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\r\n{Body}\r\n'
+        else:
+            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\nBcc: {Bcc}\r\n{Body}\r\n'
+
+        folders_move = filtering(mail_content)
+        
 
         Attach_file_name = self.__get_attach_file_name(receive_message, email_type)
 
-        file_path = os.path.join('res', 'emails', self.__account, email_type, From, boundary, 'content.txt')
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'w') as file:
-            if Bcc == None:
-                file.write(f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\r\n{Body}\r\n')
+        for folder in folders_move:
+            file_path = os.path.join('res', 'emails', self.__account, email_type, From, boundary, 'content.txt')
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file_path, 'w') as file:
+                file.write(mail_content)
                 for file_name in Attach_file_name:
                     file.write(f'{file_name}\n')
-            else:
-                file.write(f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\nBcc: {Bcc}\r\n{Body}\r\n')
-                for file_name in Attach_file_name:
-                    file.write(f'{file_name} ')
                               
         
     def receive_mail (self, pop3_server = '127.0.0.1', pop3_port = 3335):
@@ -159,3 +164,46 @@ class EmailPostOfficer:
         response = pop3_socket.recv(1024).decode()
         
         pop3_socket.close()
+
+
+
+def filtering(data):
+    res = []
+    name = 'res/configurations/filter_info.json'
+    with open(name, 'r') as file:
+        filter_config = json.load(file)
+
+    pattern = re.compile(
+        r'Date: (.+)\nFrom: (.+)\nTo: (.+)\nSubject: (.+)\nCc: (.+)\n(.+)', re.DOTALL)
+
+    match = pattern.search(data)
+
+    if match:
+        sender = match.group(2)
+        subject = match.group(4)
+        body = match.group(6)
+        for folder in filter_config:
+            types = filter_config[folder][-1]
+            keywords = filter_config[folder][:-1]
+            types = types.split(' ')
+
+            for type in types:
+                data = ''
+                if (type == 'name'):
+                    data = sender
+                if (type == 'subj'):
+                    data = subject
+                if (type == 'ctn'):
+                    data = body
+
+                if filter_keyword(data, keywords):
+                    res.append(folder)
+    file.close()
+    return res
+
+
+def filter_keyword(data, keywords):
+    pattern = re.compile(r'\b(?:' + '|'.join(re.escape(keyword)
+                         for keyword in keywords) + r')\b', flags=re.IGNORECASE)
+    return pattern.search(data)
+

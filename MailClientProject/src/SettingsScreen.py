@@ -61,6 +61,11 @@ class SettingsScreen(ft.UserControl):
             work_items=[word.strip(space) for word in re.split(delimiters,work) if word.strip(space)]
             spam_items=[word.strip(space) for word in re.split(delimiters,spam) if word.strip(space)]
             
+            project_items.append("name")
+            important_items.append("sbj")
+            work_items.append("ctn")
+            spam_items.append("sbj ctn")
+            
             self.data={
                 "project":project_items,
                 "important":important_items,
