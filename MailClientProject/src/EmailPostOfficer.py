@@ -180,22 +180,19 @@ def filtering(data):
         subject = match.group(4)
         body = match.group(6)
         for folder in filter_config:
-            types = filter_config[folder][-1]
-            keywords = filter_config[folder][:-1]
-            types = types.split(' ')
+            keywords = filter_config[folder]
+            if folder == 'project':
+                data = sender
+            if folder == 'important':
+                data = subject
+            if folder == 'work':
+                data = body
+            if folder == 'spam':
+                data = subject + '\n' + body
 
-            for _type in types:
-                data = ''
-                if (_type == 'name'):
-                    data = sender
-                if (_type == 'subj'):
-                    data = subject
-                if (_type == 'ctn'):
-                    data = body
-
-                if filter_keyword(data, keywords):
-                    file.close()
-                    return folder
+            if filter_keyword(data, keywords):
+                file.close()
+                return folder
     file.close()
     return "inbox"
 
