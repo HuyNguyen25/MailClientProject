@@ -110,7 +110,7 @@ celerybeat.pid
 
 # VS Code settings
 .vscode/
-
+.vs/
 # macOS
 .DS_Store
 

@@ -65,10 +65,11 @@ class MessageItem(ft.UserControl):
         
     
 
-class InboxScreen(ft.UserControl):
-    def __init__(self, page:ft.Page):
+class MailboxScreen(ft.UserControl):
+    def __init__(self, page:ft.Page, mail_box_folder='inbox'):
         super().__init__()
         self.page=page
+        self.mail_box_folder=mail_box_folder
 
     def load_account_and_time_info(self):
        f=open('res/configurations/login_info.json')
@@ -106,7 +107,7 @@ class InboxScreen(ft.UserControl):
 
         def load_message_paths():
             self.message_paths.clear()
-            root_folder=os.path.join('res','emails',self.account,'inbox')
+            root_folder=os.path.join('res','emails',self.account,self.mail_box_folder)
             for foldername, subfolders, filenames in os.walk(root_folder): 
                 for filename in filenames:
                     if filename=='content.txt':
@@ -144,8 +145,22 @@ class InboxScreen(ft.UserControl):
             on_click=retrieve_emails_button_clicked,
         )
         
-        return ft.Column(
+        return ft.Column(            
             controls=[
+                ft.Row(
+                    alignment=MainAxisAlignment.START,
+                    controls=[
+                        ft.Container(
+                            content=ft.Text(
+                                value=self.mail_box_folder.capitalize(),
+                                size=20,
+                                color=ft.colors.BLACK
+                            ),
+                            bgcolor=ft.colors.GREY_300,
+                            padding=16
+                        )
+                    ]
+                ),
                 ft.Row(
                     alignment=MainAxisAlignment.END,
                     controls=[
