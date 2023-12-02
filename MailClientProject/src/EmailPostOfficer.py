@@ -37,9 +37,11 @@ class EmailPostOfficer:
         if mail_message.is_multipart():
             for part in mail_message.walk():
                 if part.get_content_type() == 'text/plain':
-                    return part.get_payload(decode=True).decode(part.get_content_charset())
-                    
-        return ""     
+                    payload_body = part.get_payload(decode=True).decode(part.get_content_charset())
+                    message_body = payload_body.replace('\r\n','\n')
+                    return message_body
+
+        return ""
     
     def __get_attach_file_name(self, receive_message):
         receive_mail = receive_message.encode()
@@ -99,10 +101,12 @@ class EmailPostOfficer:
         
         Body = self.__get_body(mail_message)
         
+        Divider = '\n..................\n'
+
         if Bcc == None:
-            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\r\n{Body}\r\n'
+            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}{Divider}{Body}{Divider}'
         else:
-            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\nBcc: {Bcc}\r\n{Body}\r\n'
+            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\nBcc: {Bcc}{Divider}{Body}{Divider}'
 
         self.folder = self.__filter(mail_content)
         
@@ -175,14 +179,14 @@ class EmailPostOfficer:
             filter_config = json.load(file)
 
         pattern = re.compile(
-            r'Date: (.+)\nFrom: (.+)\nTo: (.+)\nSubject: (.+)\nCc: (.+)\n(.+)', re.DOTALL)
+              r'Date: (.+?)[\r\n]+From: (.+?)[\r\n]+To: (.+?)[\r\n]+Subject: (.*?)(?:[\r\n]+Cc: (.*?))?(?:[\r\n]+Bcc: (.*?))?(?:[\r\n]+([\s\S]*?)(?:(?=\r\n\w+:)|$))', re.DOTALL)
 
         match = pattern.search(data)
 
         if match:
             sender = match.group(2)
             subject = match.group(4)
-            body = match.group(6)
+            body = match.group(7)
             for folder in filter_config:
                 keywords = filter_config[folder]
                 if folder == 'project':
@@ -192,9 +196,10 @@ class EmailPostOfficer:
                 if folder == 'work':
                     data = body
                 if folder == 'spam':
-                    data = subject + '\n' + body
+                    data = str(subject )+ '\n' + str(body)
 
-                if keywords != [] and self.__filter_keyword(data, keywords):
+                data = str(data)
+                if self.__filter_keyword(data, keywords) and keywords:
                     file.close()
                     return folder
         file.close()
@@ -202,6 +207,8 @@ class EmailPostOfficer:
 
 
     def __filter_keyword(self, data, keywords):
-        pattern = re.compile(r'\b(?:' + '|'.join(re.escape(keyword)
-                            for keyword in keywords) + r')\b', flags=re.IGNORECASE)
+        if not data: 
+            return False
+        pattern = re.compile('|'.join(re.escape(keyword)
+                                      for keyword in keywords), flags=re.IGNORECASE)
         return pattern.search(data)
