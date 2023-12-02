@@ -152,7 +152,7 @@ class EmailPostOfficer:
             retr_size = int(self.__get_retrieve_size(list_response, i))
             response = pop3_socket.recv(retr_size*8+100).decode()
 
-            folder_type = self.__filter(data=response)
+            #folder_type = self.__filter(data=response)
 
             self.__receive_content(receive_message=response)
             self.__receive_attach_file(receive_message=response)
@@ -177,14 +177,14 @@ class EmailPostOfficer:
             filter_config = json.load(file)
 
         pattern = re.compile(
-            r'Date: (.+)[\r\n]+From: (.+)[\r\n]+To: (.+)(?:[\r\n]+Subject: (.*))?(?:[\r\n]+Cc: (.*))?[\r\n]+([\s\S]*)', re.DOTALL)
+              r'Date: (.+?)[\r\n]+From: (.+?)[\r\n]+To: (.+?)[\r\n]+Subject: (.*?)(?:[\r\n]+Cc: (.*?))?(?:[\r\n]+Bcc: (.*?))?(?:[\r\n]+([\s\S]*?)(?:(?=\r\n\w+:)|$))', re.DOTALL)
 
         match = pattern.search(data)
 
         if match:
             sender = match.group(2)
             subject = match.group(4)
-            body = match.group(6)
+            body = match.group(7)
             for folder in filter_config:
                 keywords = filter_config[folder]
                 if folder == 'project':
@@ -194,8 +194,9 @@ class EmailPostOfficer:
                 if folder == 'work':
                     data = body
                 if folder == 'spam':
-                    data = subject + '\n' + body
+                    data = str(subject )+ '\n' + str(body)
 
+                data = str(data)
                 if self.__filter_keyword(data, keywords) and keywords:
                     file.close()
                     return folder
@@ -203,6 +204,8 @@ class EmailPostOfficer:
         return "inbox"
 
     def __filter_keyword(self, data, keywords):
+        if not data: 
+            return False
         pattern = re.compile('|'.join(re.escape(keyword)
                                       for keyword in keywords), flags=re.IGNORECASE)
         return pattern.search(data)
