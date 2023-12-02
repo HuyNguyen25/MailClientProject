@@ -179,14 +179,17 @@ class EmailPostOfficer:
             filter_config = json.load(file)
 
         pattern = re.compile(
-              r'Date: (.+?)[\r\n]+From: (.+?)[\r\n]+To: (.+?)[\r\n]+Subject: (.*?)(?:[\r\n]+Cc: (.*?))?(?:[\r\n]+Bcc: (.*?))?(?:[\r\n]+([\s\S]*?)(?:(?=\r\n\w+:)|$))', re.DOTALL)
-
+        r'Date: (.+?)\b[\r\n]+From: (.+?)\b[\r\n]+To: (.+?)\b[\r\n]+Subject: (.*?)\b(?:[\r\n]+Cc:(.*?)(?:\.{4,}\s*([\s\S]*?)\s*\.{4,}))?(?:[\r\n]+Bcc:(.*?))?(?:[\r\n]+(?:\.{4,}\s*([\s\S]*?)\s*\.{4,}))?(?:[\r\n]+([\s\S]*))?(?:(?=\r\n\w+:)|$)', re.DOTALL)
         match = pattern.search(data)
-
         if match:
+          
             sender = match.group(2)
+       
             subject = match.group(4)
-            body = match.group(7)
+       
+            body = match.group(6) if match.group(6) is not None else match.group(
+                7) if match.group(7) is not None else ""
+
             for folder in filter_config:
                 keywords = filter_config[folder]
                 if folder == 'project':
@@ -209,6 +212,6 @@ class EmailPostOfficer:
     def __filter_keyword(self, data, keywords):
         if not data: 
             return False
-        pattern = re.compile('|'.join(re.escape(keyword)
+        pattern = re.compile('|'.join(r'\b'+re.escape(keyword) + r'\b'
                                       for keyword in keywords), flags=re.IGNORECASE)
         return pattern.search(data)
