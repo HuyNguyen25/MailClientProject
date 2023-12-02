@@ -206,6 +206,6 @@ class EmailPostOfficer:
     def __filter_keyword(self, data, keywords):
         if not data: 
             return False
-        pattern = re.compile('|'.join(re.escape(keyword)
+        pattern = re.compile('|'.join(r'\b'+re.escape(keyword) + r'\b'
                                       for keyword in keywords), flags=re.IGNORECASE)
         return pattern.search(data)
