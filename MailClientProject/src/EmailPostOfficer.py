@@ -176,7 +176,7 @@ class EmailPostOfficer:
         pop3_socket.close()
 
     def __filter(self, data):
-        result = ['inbox']
+        result = []
         name = 'res/configurations/filter_info.json'
         with open(name, 'r') as file:
             filter_config = json.load(file)
@@ -213,6 +213,8 @@ class EmailPostOfficer:
                     if self.__filter_keyword(data, values) and values:
                         result.append(folder) if key not in result else None
         file.close()
+        if len(result)==0:
+            result.append('inbox')
         return result
 
     def __filter_keyword(self, data, keywords):
