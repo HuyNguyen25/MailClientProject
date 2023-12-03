@@ -39,10 +39,12 @@ class EmailPostOfficer:
         if mail_message.is_multipart():
             for part in mail_message.walk():
                 if part.get_content_type() == 'text/plain':
-                    return part.get_payload(decode=True).decode(part.get_content_charset())
+                    payload_body = part.get_payload(decode=True).decode(part.get_content_charset())
+                    message_body = payload_body.replace('\r\n','\n')
+                    return message_body
 
         return ""
-
+    
     def __get_attach_file_name(self, receive_message):
         receive_mail = receive_message.encode()
         receive_content = receive_mail[(receive_mail.find("\r\n".encode())+2):]
@@ -102,11 +104,13 @@ class EmailPostOfficer:
         Bcc = mail_message['Bcc']
 
         Body = self.__get_body(mail_message)
+        
+        Divider = '\n..................\n'
 
         if Bcc == None:
-            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\r\n{Body}\r\n'
+            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}{Divider}{Body}{Divider}'
         else:
-            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\nBcc: {Bcc}\r\n{Body}\r\n'
+            mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\nBcc: {Bcc}{Divider}{Body}{Divider}'
 
         self.folder = self.__filter(mail_content)
 

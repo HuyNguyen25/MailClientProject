@@ -2,6 +2,7 @@ import flet as ft
 from flet import *
 import Email
 import json
+import os
 import re
 
 def load_sender():
@@ -37,6 +38,7 @@ class SendEmailScreen(ft.UserControl):
         self.sender=load_sender()
         self.filePaths=[]
         self.fileNames=[]
+        self.oversize_file_list=[]
 
     def build(self):
         self.txt_sender=ft.TextField(
@@ -92,19 +94,40 @@ class SendEmailScreen(ft.UserControl):
             self.row_attachments.controls.remove(chosen_file)
             self.fileNames.remove(chosen_file.name)
             self.filePaths.remove(chosen_file.path)
-            self.update()
+            self.update()      
 
+        self.dlg_oversize_attachments=ft.AlertDialog(
+            title=ft.Text(
+                value="Can not attach these files (> 3MB): "
+            ),
+            content=ft.Text(
+                value=""
+            )
+        )
+
+        def open_dlg_oversize_attachments():
+            self.page.dialog=self.dlg_oversize_attachments
+            self.dlg_oversize_attachments.open=True
+            self.page.update()
 
         def on_dialog_result(e):
-            try:
+            try:                
                 for file in e.files:
-                    self.filePaths.append(file.path)
-                    self.fileNames.append(file.name)
+                    #check if the size of a file is less than 3MB
+                    if os.path.getsize(file.path) <= 3000000:
+                        self.filePaths.append(file.path)
+                        self.fileNames.append(file.name)
 
-                    self.row_attachments.controls.append(
-                        ChosenFile(file_name=file.name,file_path=file.path,remove_file=remove_file)
-                    )
+                        self.row_attachments.controls.append(
+                            ChosenFile(file_name=file.name,file_path=file.path,remove_file=remove_file)
+                        )
+                    else:
+                        self.oversize_file_list.append(file.name)
                 self.update()
+                if self.oversize_file_list!=[]:
+                    self.dlg_oversize_attachments.content.value=', '.join(self.oversize_file_list)
+                    open_dlg_oversize_attachments()
+                    self.oversize_file_list.clear()
             except:
                 pass    
 
@@ -119,10 +142,30 @@ class SendEmailScreen(ft.UserControl):
             on_click=attach_button_clicked
         )
 
+        self.dlg_send_successfully=ft.AlertDialog(
+            title=ft.Text("The email is sent successfully")
+        )
+
+        def open_send_successfully_dialog():
+            self.page.dialog=self.dlg_send_successfully
+            self.dlg_send_successfully.open=True
+            self.page.update()
+
+        self.dlg_failed_to_send=ft.AlertDialog(
+            title=ft.Text(
+                value="The To: field is empty"
+            )
+        )
+
+        def open_failed_to_send_dialog():
+            self.page.dialog=self.dlg_failed_to_send
+            self.dlg_failed_to_send.open=True
+            self.page.update()
+
         def send_button_clicked(e):
             delimiters=',|;|/|&'
             space=' '
-            if self.txt_sender.value!='' and self.txt_receivers!='':
+            if self.txt_sender.value!='' and self.txt_receivers.value!='':
                 str_sender=self.txt_sender.value
                 str_receivers=self.txt_receivers.value
                 str_subject=self.txt_subject.value
@@ -140,6 +183,11 @@ class SendEmailScreen(ft.UserControl):
                     attachments=self.filePaths
                 )
                 email.send_emails()
+
+                open_send_successfully_dialog()
+            else:
+                open_failed_to_send_dialog()
+
 
         self.btn_send=ft.IconButton(
             icon=ft.icons.SEND,

@@ -113,12 +113,13 @@ class MailboxScreen(ft.UserControl):
                     if filename=='content.txt':
                         self.message_paths.append(os.path.join(foldername,filename))
         
-        def load_message_items():  
+        def load_message_items(): 
+            Divider = '\n..................\n' 
             self.lv_message_list.controls.clear()
         
             for item in self.message_paths:
                 with open(item,'r') as message_file:
-                    header,content,attachments=message_file.read().split('\n\n')
+                    header, content, attachments=message_file.read().split(Divider)
                     
                     self.lv_message_list.controls.append(
                         MessageItem(
