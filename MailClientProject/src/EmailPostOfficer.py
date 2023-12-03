@@ -8,7 +8,7 @@ class EmailPostOfficer:
     def __init__(self, account = '', time = ''):
         self.__account = account
         self.__refresh_time = time
-        self.folder='inbox'
+        self.folders=[]
         
     def __get_number_of_mail(self, receive_message):
         message_split = receive_message.split()
@@ -43,7 +43,7 @@ class EmailPostOfficer:
 
         return ""
     
-    def __get_attach_file_name(self, receive_message):
+    def __get_attach_file_name(self, receive_message, folder):
         receive_mail = receive_message.encode()
         receive_content = receive_mail[(receive_mail.find("\r\n".encode())+2):]
         mail_message = message_from_bytes(receive_content)
@@ -59,7 +59,7 @@ class EmailPostOfficer:
                     continue
                 if part.get_content_type() == 'application/octet-stream':
                     file_name = os.path.basename(part.get_filename()) 
-                    full_path = os.path.join('res', 'emails', self.__account, self.folder, From, boundary, file_name)
+                    full_path = os.path.join('res', 'emails', self.__account, folder, From, boundary, file_name)
                     list_file.append(full_path)
                     
         return list_file    
@@ -80,10 +80,11 @@ class EmailPostOfficer:
                 if part.get_content_type() == 'application/octet-stream':
                     file_name = os.path.basename(part.get_filename())
 
-                    file_path = os.path.join('res', 'emails', self.__account, self.folder, From, boundary, file_name)
-                    os.makedirs(os.path.dirname(file_path), exist_ok=True)                    
-                    with open(file_path, 'wb') as file:
-                        file.write(part.get_payload(decode = True))
+                    for folder in self.folders:
+                        file_path = os.path.join('res', 'emails', self.__account, folder, From, boundary, file_name)
+                        os.makedirs(os.path.dirname(file_path), exist_ok=True)                    
+                        with open(file_path, 'wb') as file:
+                            file.write(part.get_payload(decode = True))
     
     def __receive_content(self, receive_message):
         receive_mail = receive_message.encode()
@@ -108,15 +109,17 @@ class EmailPostOfficer:
         else:
             mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\nBcc: {Bcc}{Divider}{Body}{Divider}'
 
-        self.folder = self.__filter(mail_content)
+        self.folders = self.__filter(mail_content)
         
-        Attach_file_name = self.__get_attach_file_name(receive_message)
-        file_path = os.path.join('res', 'emails', self.__account, self.folder, From, boundary, 'content.txt')
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'w') as file:
-            file.write(mail_content)
-            for file_name in Attach_file_name:
-                file.write(f'{file_name}\n')
+        
+        for folder in self.folders:
+            Attach_file_name = self.__get_attach_file_name(receive_message=receive_message,folder=folder)
+            file_path = os.path.join('res', 'emails', self.__account, folder, From, boundary, 'content.txt')
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file_path, 'w') as file:
+                file.write(mail_content)
+                for file_name in Attach_file_name:
+                    file.write(f'{file_name}\n')
                               
         
     def receive_mail (self, pop3_server = '127.0.0.1', pop3_port = 3335):
@@ -173,40 +176,44 @@ class EmailPostOfficer:
 
 
     def __filter(self, data):
-    
+        res = ['inbox']
         name = 'res/configurations/filter_info.json'
         with open(name, 'r') as file:
             filter_config = json.load(file)
+
+
+
 
         pattern = re.compile(
         r'Date: (.+?)\b[\r\n]+From: (.+?)\b[\r\n]+To: (.+?)\b[\r\n]+Subject: (.*?)\b(?:[\r\n]+Cc:(.*?)(?:\.{4,}\s*([\s\S]*?)\s*\.{4,}))?(?:[\r\n]+Bcc:(.*?))?(?:[\r\n]+(?:\.{4,}\s*([\s\S]*?)\s*\.{4,}))?(?:[\r\n]+([\s\S]*))?(?:(?=\r\n\w+:)|$)', re.DOTALL)
         match = pattern.search(data)
         if match:
-          
+
             sender = match.group(2)
-       
+
             subject = match.group(4)
-       
+
             body = match.group(6) if match.group(6) is not None else match.group(
                 7) if match.group(7) is not None else ""
 
-            for folder in filter_config:
-                keywords = filter_config[folder]
-                if folder == 'project':
-                    data = sender
-                if folder == 'important':
-                    data = subject
-                if folder == 'work':
-                    data = body
-                if folder == 'spam':
-                    data = str(subject )+ '\n' + str(body)
+            for folder, vals in filter_config.items():
+                for key, values in vals.items():
 
-                data = str(data)
-                if self.__filter_keyword(data, keywords) and keywords:
-                    file.close()
-                    return folder
+                    # keywords = filter_config[folder]
+                    if key == 'sender':
+                        data = sender
+                    elif key == 'subject':
+                        data = subject
+                    elif key == 'content':
+                        data = body
+                    elif key == 'subject content':
+                        data = str(subject) + '\n' + str(body)
+
+                    data = str(data)
+                    if self.__filter_keyword(data, values) and values:
+                        res.append(folder) if key not in res else None
         file.close()
-        return "inbox"
+        return res
 
 
     def __filter_keyword(self, data, keywords):

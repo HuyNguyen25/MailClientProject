@@ -55,28 +55,28 @@ class SendEmailScreen(ft.UserControl):
             hint_text="To", 
             keyboard_type=KeyboardType.EMAIL,
             height=45,
-            cursor_height=20
+            cursor_height=20,
         )
         self.txt_cc=ft.TextField(
             label="Cc:", 
             hint_text="Cc", 
             keyboard_type=KeyboardType.EMAIL,
             height=45,
-            cursor_height=20
+            cursor_height=20,
         )
         self.txt_bcc=ft.TextField(
             label="Bcc:", 
             hint_text="Bcc", 
             keyboard_type=KeyboardType.EMAIL,
             height=45,
-            cursor_height=20
+            cursor_height=20,
         )
         self.txt_subject=ft.TextField(
             label="Subject: ",
             hint_text="Subject",
             keyboard_type=KeyboardType.TEXT,
             height=45,
-            cursor_height=20
+            cursor_height=20,
         )
         self.txt_content=ft.TextField(
             label="Content: ",
@@ -163,7 +163,7 @@ class SendEmailScreen(ft.UserControl):
             self.page.update()
 
         def send_button_clicked(e):
-            delimiters=',|;|/|&'
+            delimiters=',|;|/|&|\n'
             space=' '
             if self.txt_sender.value!='' and self.txt_receivers.value!='':
                 str_sender=self.txt_sender.value
