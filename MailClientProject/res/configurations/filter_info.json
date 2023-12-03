@@ -1,6 +1,26 @@
 {
-    "project": [],
-    "important": [],
-    "work": [],
-    "spam": []
+    "project": {
+        "sender": [],
+        "subject": [],
+        "content": [],
+        "subject content": []
+    },
+    "important": {
+        "sender": [],
+        "subject": [],
+        "content": [],
+        "subject content": []
+    },
+    "work": {
+        "sender": [],
+        "subject": [],
+        "content": [],
+        "subject content": []
+    },
+    "spam": {
+        "sender": [],
+        "subject": [],
+        "content": [],
+        "subject content": []
+    }
 }
