@@ -3,105 +3,122 @@ from flet import *
 import json
 import re
 
-class SettingsScreen(ft.UserControl):
-    def __init__(self, page: ft.Page):
+class FilterSection(ft.UserControl):
+    def __init__(self, filter_type: str, data: dict):
         super().__init__()
-        self.page=page
-    
-    def load_settings_data(self):
-        f=open('res/configurations/filter_info.json')
-        self.data=json.load(f)
-    
+        self.filter_type=filter_type
+        self.data=data
+
     def build(self):
-        self.load_settings_data()
-
-        self.txt_project_filter=ft.TextField(
-            label="Project",
-            hint_text="Emails sent from these accounts will be moved to Project",
+        self.txt_sender_filter=ft.TextField(
+            label="From: ",
+            hint_text=f"Emails sent from these accounts will be moved to {self.filter_type.capitalize()}",
             multiline=True,
-            prefix_icon="CONSTRUCTION_OUTLINED",
-            value=', '.join(self.data['project'][:-1])
+            filled=True,
+            border=InputBorder.NONE,
+            value=', '.join(self.data[self.filter_type]['sender'])
         )
 
-
-        self.txt_important_filter=ft.TextField(
-            label="Important",
-            hint_text="Emails whose subjects contain these words will be moved to Important",
+        self.txt_subject_filter=ft.TextField(
+            label="Subject has: ",
+            hint_text=f"Emails with these words in their subjects will be moved to {self.filter_type.capitalize()}",
             multiline=True,
-            prefix_icon="LABEL_IMPORTANT_OUTLINE",
-            value=', '.join(self.data['important'][:-1])
-        )
-        
-        self.txt_work_filter=ft.TextField(
-            label="Work",
-            hint_text="Emails whose contents contain these words will be moved to Work",
-            multiline=True,
-            prefix_icon="WORK_OUTLINE",
-            value=', '.join(self.data['work'][:-1])
+            filled=True,
+            border=InputBorder.NONE,
+            value=', '.join(self.data[self.filter_type]['subject'])
         )
 
-        self.txt_spam_filter=ft.TextField(
-            label="Spam",
-            hint_text="Emails whose subjects or contents contain these words will be moved to Spam",
+        self.txt_content_filter=ft.TextField(
+            label="Content has: ",
+            hint_text=f"Emails with these words in their contents will be moved to {self.filter_type.capitalize()}",
             multiline=True,
-            prefix_icon="WARNING_AMBER_OUTLINED",
-            value=', '.join(self.data['spam'][:-1])
+            filled=True,
+            border=InputBorder.NONE,
+            value=', '.join(self.data[self.filter_type]['content'])
+        )
+
+        self.txt_subject_and_content_filter=ft.TextField(
+            label="Has the words: ",
+            hint_text=f"Emails with these words will be moved to {self.filter_type.capitalize()}",
+            multiline=True,
+            filled=True,
+            border=InputBorder.NONE,
+            value=', '.join(self.data[self.filter_type]['subject content'])
         )
 
         def done_button_clicked(e):
-            delimiters=',|;|/|&'
+            delimiters=',|;|/|&|\n'
             space=' '
-            project=self.txt_project_filter.value
-            important=self.txt_important_filter.value
-            work=self.txt_work_filter.value
-            spam=self.txt_spam_filter.value
+            senders=self.txt_sender_filter.value
+            subjects=self.txt_subject_filter.value
+            contents=self.txt_content_filter.value
+            subjects_and_contents=self.txt_subject_and_content_filter.value
 
-            project_items=[word.strip(space) for word in re.split(delimiters,project) if word.strip(space)]
-            important_items=[word.strip(space) for word in re.split(delimiters,important) if word.strip(space)]
-            work_items=[word.strip(space) for word in re.split(delimiters,work) if word.strip(space)]
-            spam_items=[word.strip(space) for word in re.split(delimiters,spam) if word.strip(space)]
-       
-            self.data={
-                "project":project_items,
-                "important":important_items,
-                "work":work_items,
-                "spam":spam_items
+            sender_items=[word.strip(space) for word in re.split(delimiters,senders) if word.strip(space)]
+            subject_items=[word.strip(space) for word in re.split(delimiters,subjects) if word.strip(space)]
+            content_items=[word.strip(space) for word in re.split(delimiters,contents) if word.strip(space)]
+            subject_and_content_items=[word.strip(space) for word in re.split(delimiters,subjects_and_contents) if word.strip(space)]
+
+            filter_data={
+                "sender": sender_items,
+                "subject": subject_items,
+                "content": content_items,
+                "subject content": subject_and_content_items 
             }
+
+            self.data[self.filter_type]=filter_data
             json_object=json.dumps(self.data,indent=4)
             with open('res/configurations/filter_info.json','w') as json_file:
                 json_file.write(json_object)
 
         self.btn_done=ft.TextButton(
             text="Done",
-            width=80,
-            height=60,
             on_click=done_button_clicked
         )
 
         return ft.Column(
-            alignment=MainAxisAlignment.CENTER,
-            horizontal_alignment=CrossAxisAlignment.CENTER,
             controls=[
                 ft.Text(
-                    value="Emails sent from accounts in Project field will be moved to Project"
+                    value=self.filter_type.capitalize()+' filter',
+                    size=15
                 ),
+                self.txt_sender_filter,
+                self.txt_subject_filter,
+                self.txt_content_filter,
+                self.txt_subject_and_content_filter,
+                ft.Row(
+                    alignment=MainAxisAlignment.END,
+                    controls=[
+                        self.btn_done
+                    ]
+                )
+            ]
+        )
+
+class SettingsScreen(ft.UserControl):
+    def __init__(self, page: ft.Page):
+        super().__init__()
+        self.page=page
+        f=open('res/configurations/filter_info.json')
+        self.filter_data=json.load(f)
+    
+    def build(self):
+        self.filter_settings=ft.Column(
+            controls=[
+                FilterSection(filter_type='project', data=self.filter_data),
+                FilterSection(filter_type='important', data=self.filter_data),
+                FilterSection(filter_type='work', data=self.filter_data),
+                FilterSection(filter_type='spam', data=self.filter_data)
+            ]
+        )
+
+        return ft.Column(
+            controls=[
                 ft.Text(
-                    value="Emails whose subjects contain words in Important field will be moved to Important"
+                    value='Filter settings',
+                    size=20
                 ),
-                ft.Text(
-                    value="Emails whose contents contain words in Work field will be moved to Work"
-                ),
-                ft.Text(
-                    value="Emails whose subjects or contents contain words in Spam will be moved to Spam"
-                ),
-                ft.Text(
-                    value="Each items in the fields below is separated by , or ;"
-                ),
-                self.txt_project_filter,
-                self.txt_important_filter,
-                self.txt_work_filter,
-                self.txt_spam_filter,
-                self.btn_done
+                self.filter_settings
             ]
         )
 
