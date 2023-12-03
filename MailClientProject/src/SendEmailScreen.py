@@ -119,10 +119,30 @@ class SendEmailScreen(ft.UserControl):
             on_click=attach_button_clicked
         )
 
+        dlg_send_successfully=ft.AlertDialog(
+            title=ft.Text("The email is sent successfully")
+        )
+
+        def open_send_successfully_dialog():
+            self.page.dialog=dlg_send_successfully
+            dlg_send_successfully.open=True
+            self.page.update()
+
+        dlg_failed_to_send=ft.AlertDialog(
+            title=ft.Text(
+                value="The To: field is empty"
+            )
+        )
+
+        def open_failed_to_send_dialog():
+            self.page.dialog=dlg_failed_to_send
+            dlg_failed_to_send.open=True
+            self.page.update()
+
         def send_button_clicked(e):
             delimiters=',|;|/|&'
             space=' '
-            if self.txt_sender.value!='' and self.txt_receivers!='':
+            if self.txt_sender.value!='' and self.txt_receivers.value!='':
                 str_sender=self.txt_sender.value
                 str_receivers=self.txt_receivers.value
                 str_subject=self.txt_subject.value
@@ -140,6 +160,11 @@ class SendEmailScreen(ft.UserControl):
                     attachments=self.filePaths
                 )
                 email.send_emails()
+
+                open_send_successfully_dialog()
+            else:
+                open_failed_to_send_dialog()
+
 
         self.btn_send=ft.IconButton(
             icon=ft.icons.SEND,

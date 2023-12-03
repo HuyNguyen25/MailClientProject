@@ -1,16 +1,6 @@
 {
-    "project": [
-        "3",
-        "4"
-    ],
-    "important": [
-        "cat"
-    ],
-    "work": [
-        "work",
-        "work2"
-    ],
-    "spam": [
-        "spam"
-    ]
+    "project": [],
+    "important": [],
+    "work": [],
+    "spam": []
 }
