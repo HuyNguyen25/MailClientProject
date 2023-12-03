@@ -173,16 +173,11 @@ class EmailPostOfficer:
         
         pop3_socket.close()
 
-
-
     def __filter(self, data):
-        res = ['inbox']
+        result = []
         name = 'res/configurations/filter_info.json'
         with open(name, 'r') as file:
             filter_config = json.load(file)
-
-
-
 
         pattern = re.compile(
         r'Date: (.+?)\b[\r\n]+From: (.+?)\b[\r\n]+To: (.+?)\b[\r\n]+Subject: (.*?)\b(?:[\r\n]+Cc:(.*?)(?:\.{4,}\s*([\s\S]*?)\s*\.{4,}))?(?:[\r\n]+Bcc:(.*?))?(?:[\r\n]+(?:\.{4,}\s*([\s\S]*?)\s*\.{4,}))?(?:[\r\n]+([\s\S]*))?(?:(?=\r\n\w+:)|$)', re.DOTALL)
@@ -211,10 +206,11 @@ class EmailPostOfficer:
 
                     data = str(data)
                     if self.__filter_keyword(data, values) and values:
-                        res.append(folder) if key not in res else None
+                        result.append(folder) if key not in result else None
         file.close()
-        return res
-
+        if len(result)==0:
+            result.append('inbox')
+        return result
 
     def __filter_keyword(self, data, keywords):
         if not data: 
