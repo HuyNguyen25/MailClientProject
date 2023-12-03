@@ -1,15 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\res",
-    "\\res\\configurations",
     "\\res\\emails",
     "\\res\\emails\\1",
     "\\res\\emails\\1\\inbox",
     "\\res\\emails\\1\\inbox\\2",
     "\\res\\emails\\1\\inbox\\2\\===============3038738982437614862==",
-    "\\res\\icons",
-    "\\src"
+    "\\res\\emails\\2",
+    "\\res\\emails\\2\\important",
+    "\\res\\emails\\2\\important\\1",
+    "\\res\\emails\\2\\important\\1\\===============8936160017242431824==",
+    "\\res\\emails\\2\\inbox"
   ],
   "SelectedNode": "\\src\\main.py",
   "PreviewInSolutionExplorer": false

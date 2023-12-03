@@ -6,9 +6,15 @@
         "subject content": []
     },
     "important": {
-        "sender": [],
-        "subject": [],
-        "content": [],
+        "sender": [
+            "spam"
+        ],
+        "subject": [
+            "spam"
+        ],
+        "content": [
+            "spam"
+        ],
         "subject content": []
     },
     "work": {
@@ -20,7 +26,11 @@
     "spam": {
         "sender": [],
         "subject": [],
-        "content": [],
-        "subject content": []
+        "content": [
+            "work"
+        ],
+        "subject content": [
+            "spam"
+        ]
     }
 }

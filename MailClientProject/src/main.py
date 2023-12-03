@@ -1,13 +1,12 @@
-from flet import*
+from flet import *
 import flet as ft
 import LoginScreen
 from time import *
 
-  
 
-def main(page:ft.Page):
-    page.title="MAIL CLIENT"
-    page.scroll=True
+def main(page: ft.Page):
+    page.title = "MAIL CLIENT"
+    page.scroll = True
     # page.theme=ft.Theme(
     #     color_scheme=ft.ColorScheme(
     #         primary =  "0xFF006496",
@@ -43,6 +42,6 @@ def main(page:ft.Page):
     #     )
     # )
     page.add(LoginScreen.LoginScreen(page=page))
-    
+
 
 ft.app(target=main)
