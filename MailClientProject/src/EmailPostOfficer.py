@@ -154,9 +154,9 @@ class EmailPostOfficer:
             pop3_socket.send(retrieve_command.encode())
             retr_size = int(self.__get_retrieve_size(list_response,i))
             response = pop3_socket.recv(retr_size*8+100).decode()
-
+            
             folder_type = self.__filter(data = response)
-
+            
             self.__receive_content(receive_message=response)
             self.__receive_attach_file(receive_message=response)
             
