@@ -80,7 +80,7 @@ class Email():
             
         # Disconnect
         quit_command = 'QUIT\r\n'
-        smtp_socket.send(quit_command.encode())
+        smtp_socket.sendall(quit_command.encode())
         response = smtp_socket.recv(1024).decode()
         print(response)
     
@@ -145,7 +145,7 @@ class Email():
             
             # Disconnect
             quit_command = 'QUIT\r\n'
-            smtp_socket.send(quit_command.encode())
+            smtp_socket.sendall(quit_command.encode())
             response = smtp_socket.recv(1024).decode()
             print(response)
     
