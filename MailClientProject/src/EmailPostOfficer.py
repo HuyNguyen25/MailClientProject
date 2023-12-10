@@ -133,25 +133,25 @@ class EmailPostOfficer:
         
         # Send user name
         user_command = f'USER {self.__account}\r\n'
-        pop3_socket.send(user_command.encode())
+        pop3_socket.sendall(user_command.encode())
         response = pop3_socket.recv(1024).decode()
         
         # Send STAT
         stat_command = 'STAT\r\n'
-        pop3_socket.send(stat_command.encode())
+        pop3_socket.sendall(stat_command.encode())
         response = pop3_socket.recv(1024).decode()
         num_message = self.__get_number_of_mail(response)
         
         # Send LIST to get Email list
         list_command = 'LIST\r\n'
-        pop3_socket.send(list_command.encode())
+        pop3_socket.sendall(list_command.encode())
         response = pop3_socket.recv(1024).decode()
         list_response = response
         
         # Send RETR to retrieve Email
         for i in range(1, num_message + 1):
             retrieve_command = f'RETR {i}\r\n'
-            pop3_socket.send(retrieve_command.encode())
+            pop3_socket.sendall(retrieve_command.encode())
             retr_size = int(self.__get_retrieve_size(list_response,i))
             response = pop3_socket.recv(retr_size*8+100).decode()
             
@@ -163,12 +163,12 @@ class EmailPostOfficer:
         #Send DELE to delete message on server
         for i in range(1, num_message + 1):
             delete_command = f'DELE {i}\r\n'
-            pop3_socket.send(delete_command.encode())
+            pop3_socket.sendall(delete_command.encode())
             response = pop3_socket.recv(1024).decode()
         
         # Disconnect
         quit_command = 'QUIT\r\n'
-        pop3_socket.send(quit_command.encode())
+        pop3_socket.sendall(quit_command.encode())
         response = pop3_socket.recv(1024).decode()
         
         pop3_socket.close()
