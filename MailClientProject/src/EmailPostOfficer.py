@@ -129,7 +129,6 @@ class EmailPostOfficer:
     
         # Receive response from server
         response = pop3_socket.recv(1024).decode()
-        #print(response)
         
         # Send user name
         user_command = f'USER {self.__account}\r\n'
@@ -150,12 +149,20 @@ class EmailPostOfficer:
         
         # Send RETR to retrieve Email
         for i in range(1, num_message + 1):
+            data=b""
+            
             retrieve_command = f'RETR {i}\r\n'
             pop3_socket.sendall(retrieve_command.encode())
-            retr_size = int(self.__get_retrieve_size(list_response,i))
-            response = pop3_socket.recv(retr_size*8+100).decode()
+
+            # Receive every segment of 1024 bytes
+            while True:
+                data_segment=pop3_socket.recv(1024)
+                if data_segment:
+                    data+=data_segment
+                if len(data_segment) < 1024:
+                    break
             
-            folder_type = self.__filter(data = response)
+            response=data.decode()
             
             self.__receive_content(receive_message=response)
             self.__receive_attach_file(receive_message=response)
@@ -194,7 +201,6 @@ class EmailPostOfficer:
             for folder, vals in filter_config.items():
                 for key, values in vals.items():
 
-                    # keywords = filter_config[folder]
                     if key == 'sender':
                         data = sender
                     elif key == 'subject':

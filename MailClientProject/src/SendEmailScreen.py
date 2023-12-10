@@ -98,7 +98,7 @@ class SendEmailScreen(ft.UserControl):
 
         self.dlg_oversize_attachments=ft.AlertDialog(
             title=ft.Text(
-                value="Can not attach these files (> 1MB): "
+                value="Can not attach these files (> 3MB): "
             ),
             content=ft.Text(
                 value=""
@@ -114,7 +114,7 @@ class SendEmailScreen(ft.UserControl):
             try:                
                 for file in e.files:
                     #check if the size of a file is less than 3MB
-                    if os.path.getsize(file.path) <= 1000000:
+                    if os.path.getsize(file.path) <= 3000000:
                         self.filePaths.append(file.path)
                         self.fileNames.append(file.name)
 
