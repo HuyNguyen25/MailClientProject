@@ -23,37 +23,31 @@ class Email():
     
         # Receive response from server
         response = smtp_socket.recv(1024).decode()
-        #print(response)
     
         # Send EHLO to start a session
         ehlo_command = 'EHLO MailServer\r\n'
         smtp_socket.sendall(ehlo_command.encode())
         response = smtp_socket.recv(1024).decode()
-        #print(response)
     
         # Send MAIL FROM and RCPT TO
         mail_from_command = f'MAIL FROM: <{self.__sender}>\r\n'
         smtp_socket.sendall(mail_from_command.encode())
         response = smtp_socket.recv(1024).decode()
-        #print(response)
     
         for rcv in self.__receivers:
             rcpt_to_command = f'RCPT TO: <{rcv}>\r\n'
             smtp_socket.sendall(rcpt_to_command.encode())
             response = smtp_socket.recv(1024).decode()
-            #print(response)
 
         for CC_rcv in self.__CC:
             rcpt_to_command = f'RCPT TO: <{CC_rcv}>\r\n'
             smtp_socket.sendall(rcpt_to_command.encode())
             response = smtp_socket.recv(1024).decode()
-            #print(response)
     
         # Send DATA to be able to enter the content of email
         data_command = 'DATA\r\n'
         smtp_socket.sendall(data_command.encode())
         response = smtp_socket.recv(1024).decode()
-        #print(response)
         
         # Create mime format mail
         email = MIMEMultipart()
@@ -74,15 +68,11 @@ class Email():
         smtp_socket.sendall(email.as_string().encode())
         smtp_socket.sendall('\r\n.\r\n'.encode())
         response = smtp_socket.recv(1024).decode()
-        #print(response)
-        if response[:3] == '250':
-            print('Email is succcessfully sended')
             
         # Disconnect
         quit_command = 'QUIT\r\n'
-        smtp_socket.send(quit_command.encode())
+        smtp_socket.sendall(quit_command.encode())
         response = smtp_socket.recv(1024).decode()
-        print(response)
     
         smtp_socket.close()               
             
@@ -110,44 +100,35 @@ class Email():
     
             # Receive response from server
             response = smtp_socket.recv(1024).decode()
-            #print(response)
     
             # Send EHLO to start a session
             ehlo_command = 'EHLO MailServer\r\n'
             smtp_socket.sendall(ehlo_command.encode())
             response = smtp_socket.recv(1024).decode()
-            #print(response)
     
             # Send MAIL FROM and RCPT TO
             mail_from_command = f'MAIL FROM: <{self.__sender}>\r\n'
             smtp_socket.sendall(mail_from_command.encode())
             response = smtp_socket.recv(1024).decode()
-            #print(response)
             
             rcpt_to_command = f'RCPT TO: <{bcc_rcv}>\r\n'
             smtp_socket.sendall(rcpt_to_command.encode())
             response = smtp_socket.recv(1024).decode()
-            #print(response)
 
             # Send DATA to be able to enter the content of email
             data_command = 'DATA\r\n'
             smtp_socket.sendall(data_command.encode())
-            response = smtp_socket.recv(1024).decode()
-            #print(response)
+            response = smtp_socket.recv(1024).decode()          
             
             # Send content of email
             smtp_socket.sendall(email.as_string().encode())
             smtp_socket.sendall('\r\n.\r\n'.encode())
             response = smtp_socket.recv(1024).decode()
-            #print(response)
-            if response[:3] == '250':
-                print('Email is succcessfully sended')
             
             # Disconnect
             quit_command = 'QUIT\r\n'
-            smtp_socket.send(quit_command.encode())
+            smtp_socket.sendall(quit_command.encode())
             response = smtp_socket.recv(1024).decode()
-            print(response)
     
             smtp_socket.close()               
 
