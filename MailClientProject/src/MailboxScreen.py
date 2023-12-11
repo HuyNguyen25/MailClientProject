@@ -4,7 +4,6 @@ import json
 import os
 import EmailPostOfficer
 import time
-from threading import Thread
 
 class MessageItem(ft.UserControl):
     def __init__(self, status='', path='', header='', content='', attachments='', del_func=None, seen_func=None):
@@ -142,10 +141,14 @@ class MailboxScreen(ft.UserControl):
                     if filename=='content.txt':
                         self.message_paths.append(os.path.join(foldername,filename))
         
+        def sort_message_paths():
+            self.message_paths.sort(reverse=True ,key=lambda item: time.strptime(open(item,'r').readline()[6:].strip('\n'),'%A, %d/%m/%Y, at %H:%M:%S'))
+
         def load_message_items(): 
             Divider = '\n..................\n' 
             self.lv_message_list.controls.clear()
         
+            sort_message_paths()
             for item in self.message_paths:
                 with open(item,'r') as message_file:
                     header, content, attachments=message_file.read().split(Divider)
@@ -178,18 +181,6 @@ class MailboxScreen(ft.UserControl):
             icon="CLOUD_DOWNLOAD_OUTLINED",
             on_click=retrieve_emails_button_clicked,
         )
-
-        # self.auto = True
-        # def autoload():
-        #     print("new thread")
-        #     while True:
-        #         self.btn_retrieve_emails.visible=False
-        #         retrieve_emails_button_clicked(None)
-        #         self.btn_retrieve_emails.visible=True
-        #         time.sleep(2)
-
-        # self.autoloadThread = Thread(target=autoload,args=(),daemon=True)
-        # self.autoloadThread.start()
             
         return ft.Column(            
             controls=[

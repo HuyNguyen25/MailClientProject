@@ -4,7 +4,6 @@ from email.mime.application import MIMEApplication
 from datetime import datetime
 from socket import *
 
-
 class Email():
     def __init__(self, sender = '', receivers = [], subject = '', message = '', CC = [], BCC = '', attachments = []):
         self.__sender = sender

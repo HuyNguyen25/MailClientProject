@@ -3,8 +3,6 @@ import flet as ft
 import LoginScreen
 from time import *
 
-  
-
 def main(page:ft.Page):
     page.title="MAIL CLIENT"
     page.scroll=True
