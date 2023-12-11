@@ -3,6 +3,8 @@ from flet import *
 import json 
 import os
 import EmailPostOfficer
+import time
+from threading import Thread
 
 class MessageItem(ft.UserControl):
     def __init__(self, status='', path='', header='', content='', attachments='', del_func=None, seen_func=None):
@@ -18,7 +20,7 @@ class MessageItem(ft.UserControl):
     def build(self):
         self.seen_icon=ft.Icon(
             name=ft.icons.MARK_EMAIL_READ if self.status == 'seen' else ft.icons.MARK_AS_UNREAD,
-            color=ft.colors.RED_200
+            color=ft.colors.RED_200 if self.status == 'unseen' else ft.colors.BLUE_200
         )
         self.txt_showing_item=ft.Text(
             value=self.header,
@@ -176,7 +178,19 @@ class MailboxScreen(ft.UserControl):
             icon="CLOUD_DOWNLOAD_OUTLINED",
             on_click=retrieve_emails_button_clicked,
         )
-        
+
+        # self.auto = True
+        # def autoload():
+        #     print("new thread")
+        #     while True:
+        #         self.btn_retrieve_emails.visible=False
+        #         retrieve_emails_button_clicked(None)
+        #         self.btn_retrieve_emails.visible=True
+        #         time.sleep(2)
+
+        # self.autoloadThread = Thread(target=autoload,args=(),daemon=True)
+        # self.autoloadThread.start()
+            
         return ft.Column(            
             controls=[
                 ft.Row(
