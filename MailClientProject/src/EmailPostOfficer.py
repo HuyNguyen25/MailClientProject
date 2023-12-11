@@ -3,6 +3,7 @@ import os.path
 import re
 import json
 from socket import *
+from math import *
 
 class EmailPostOfficer:
     def __init__(self, account = '', time = ''):
@@ -150,12 +151,12 @@ class EmailPostOfficer:
         # Send RETR to retrieve Email
         for i in range(1, num_message + 1):
             data=b""
-            
             retrieve_command = f'RETR {i}\r\n'
             pop3_socket.sendall(retrieve_command.encode())
+            retr_size = int(self.__get_retrieve_size(list_response, i))
 
             # Receive every segment of 1024 bytes
-            while True:
+            for i in range(0,ceil(retr_size/1024)):
                 data_segment=pop3_socket.recv(1024)
                 if data_segment:
                     data+=data_segment
