@@ -110,8 +110,16 @@ class EmailPostOfficer:
         else:
             mail_content = f'Date: {Date}\nFrom: {From}\nTo: {To}\nSubject: {Subject}\nCc: {Cc}\nBcc: {Bcc}{Divider}{Body}{Divider}'
 
-        self.folders = self.__filter(mail_content)
-        
+        structure_mail_content = {
+            "Date" : Date,
+            "From": From,
+            "To":To,
+            "Subject":Subject,
+            "Cc":Cc,
+            "Bcc":Bcc,
+            "Body":Body
+        }
+        self.folders = self.__filter(structure_mail_content)
         
         for folder in self.folders:
             Attach_file_name = self.__get_attach_file_name(receive_message=receive_message,folder=folder)
@@ -186,34 +194,21 @@ class EmailPostOfficer:
         name = 'res/configurations/filter_info.json'
         with open(name, 'r') as file:
             filter_config = json.load(file)
+        for folder, vals in filter_config.items():
+            for key, values in vals.items():
 
-        pattern = re.compile(
-        r'Date: (.+?)\b[\r\n]+From: (.+?)\b[\r\n]+To: (.+?)\b[\r\n]+Subject: (.*?)\b(?:[\r\n]+Cc:(.*?)(?:\.{4,}\s*([\s\S]*?)\s*\.{4,}))?(?:[\r\n]+Bcc:(.*?))?(?:[\r\n]+(?:\.{4,}\s*([\s\S]*?)\s*\.{4,}))?(?:[\r\n]+([\s\S]*))?(?:(?=\r\n\w+:)|$)', re.DOTALL)
-        match = pattern.search(data)
-        if match:
+                if key == 'sender':
+                    filter_data = data["From"]
+                elif key == 'subject':
+                    filter_data = data["Subject"]
+                elif key == 'content':
+                    filter_data = data["Body"]
+                elif key == 'subject content':
+                    filter_data = data["Subject"] + '\n' + data["Body"]
 
-            sender = match.group(2)
-
-            subject = match.group(4)
-
-            body = match.group(6) if match.group(6) is not None else match.group(
-                7) if match.group(7) is not None else ""
-
-            for folder, vals in filter_config.items():
-                for key, values in vals.items():
-
-                    if key == 'sender':
-                        data = sender
-                    elif key == 'subject':
-                        data = subject
-                    elif key == 'content':
-                        data = body
-                    elif key == 'subject content':
-                        data = str(subject) + '\n' + str(body)
-
-                    data = str(data)
-                    if self.__filter_keyword(data, values) and values:
-                        result.append(folder) if key not in result else None
+                filter_data = str(filter_data)
+                if self.__filter_keyword(filter_data, values) and values:
+                    result.append(folder) if key not in result else None
         file.close()
         if len(result)==0:
             result.append('inbox')
