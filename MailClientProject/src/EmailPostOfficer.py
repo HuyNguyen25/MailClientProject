@@ -10,7 +10,9 @@ class EmailPostOfficer:
         self.__account = account
         self.__refresh_time = time
         self.folders=[]
-        
+        with open('res/app_management/unseen_messages_info.json','r') as json_file:
+            self.unseen_messages_data=json.load(json_file)
+
     def __get_number_of_mail(self, receive_message):
         message_split = receive_message.split()
         num = int(message_split[1])
@@ -124,6 +126,7 @@ class EmailPostOfficer:
         for folder in self.folders:
             Attach_file_name = self.__get_attach_file_name(receive_message=receive_message,folder=folder)
             file_path = os.path.join('res', 'emails', self.__account, folder, From, boundary, 'content.txt')
+            self.unseen_messages_data[folder].append(file_path)
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
             with open(file_path, 'w') as file:
                 file.write(mail_content)
@@ -188,6 +191,10 @@ class EmailPostOfficer:
         response = pop3_socket.recv(1024).decode()
         
         pop3_socket.close()
+        
+        with open('res/app_management/unseen_messages_info.json','w') as json_file:
+            json_object=json.dumps(self.unseen_messages_data,indent=4)
+            json_file.write(json_object)
 
     def __filter(self, data):
         result = []
