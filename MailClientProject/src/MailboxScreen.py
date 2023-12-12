@@ -3,22 +3,30 @@ from flet import *
 import json 
 import os
 import EmailPostOfficer
+import time
 
 class MessageItem(ft.UserControl):
-    def __init__(self, path='', header='', content='', attachments='', del_func=None):
+    def __init__(self, status='', path='', header='', content='', attachments='', del_func=None, seen_func=None):
         super().__init__()
+        self.status=status
         self.path=path
         self.header=header
         self.content=content
         self.attachments=attachments
         self.del_func=del_func
+        self.seen_func=seen_func
         
     def build(self):
+        self.seen_icon=ft.Icon(
+            name=ft.icons.MARK_EMAIL_READ if self.status == 'seen' else ft.icons.MARK_AS_UNREAD,
+            color=ft.colors.RED_200 if self.status == 'unseen' else ft.colors.BLUE_200
+        )
         self.txt_showing_item=ft.Text(
             value=self.header,
             selectable=True
         )
         def read_button_click(e):
+            self.seen_func(self)
             self.txt_showing_item.value=self.header+'\n\n'+self.content+'\n\nAttachments: \n'+self.attachments
             self.update()
 
@@ -42,6 +50,7 @@ class MessageItem(ft.UserControl):
             border_radius=ft.border_radius.all(33),
             content=ft.Column(
                 controls=[
+                    self.seen_icon,
                     self.txt_showing_item,
                     ft.Row(
                         controls=[
@@ -70,6 +79,8 @@ class MailboxScreen(ft.UserControl):
         super().__init__()
         self.page=page
         self.mail_box_folder=mail_box_folder
+        with open('res/app_management/unseen_messages_info.json','r') as json_file:
+            self.unseen_messages_data=json.load(json_file)
 
     def load_account_and_time_info(self):
        f=open('res/configurations/login_info.json')
@@ -95,15 +106,32 @@ class MailboxScreen(ft.UserControl):
                 if len(os.listdir(folder))==0:
                      os.rmdir(folder)
 
-        def delete_message(del_mess):
+        def delete_message(del_mess: MessageItem):
             os.remove(del_mess.path)
             attachments=[attachment.strip() for attachment in del_mess.attachments.split('\n') if attachment.strip()!='']
             for item in attachments:
                 os.remove(item)
             self.lv_message_list.controls.remove(del_mess)
             self.message_paths.remove(del_mess.path)
+
+            if del_mess.path in self.unseen_messages_data[self.mail_box_folder]:
+                self.unseen_messages_data[self.mail_box_folder].remove(del_mess.path)
+                with open('res/app_management/unseen_messages_info.json','w') as json_file:
+                    json_object=json.dumps(self.unseen_messages_data,indent=4)
+                    json_file.write(json_object)
+
             remove_empty_folders()
             self.update()
+
+        def seen_message(seen_mess: MessageItem):
+            if seen_mess.status == 'unseen':
+                seen_mess.status='seen'
+                seen_mess.seen_icon.name=ft.icons.MARK_EMAIL_READ
+                seen_mess.seen_icon.color=ft.colors.BLUE_200
+                self.unseen_messages_data[self.mail_box_folder].remove(seen_mess.path)
+                with open('res/app_management/unseen_messages_info.json','w') as json_file:
+                    json_object=json.dumps(self.unseen_messages_data,indent=4)
+                    json_file.write(json_object)
 
         def load_message_paths():
             self.message_paths.clear()
@@ -113,21 +141,27 @@ class MailboxScreen(ft.UserControl):
                     if filename=='content.txt':
                         self.message_paths.append(os.path.join(foldername,filename))
         
+        def sort_message_paths():
+            self.message_paths.sort(reverse=True ,key=lambda item: time.strptime(open(item,'r').readline()[6:].strip('\n'),'%A, %d/%m/%Y, at %H:%M:%S'))
+
         def load_message_items(): 
             Divider = '\n..................\n' 
             self.lv_message_list.controls.clear()
         
+            sort_message_paths()
             for item in self.message_paths:
                 with open(item,'r') as message_file:
                     header, content, attachments=message_file.read().split(Divider)
-                    
+                
                     self.lv_message_list.controls.append(
                         MessageItem(
+                            status='unseen' if item in self.unseen_messages_data[self.mail_box_folder] else 'seen',
                             path=item,
                             header=header,
                             content=content,
                             attachments=attachments,
-                            del_func=delete_message
+                            del_func=delete_message,
+                            seen_func=seen_message
                         )
                     )              
 
@@ -137,6 +171,8 @@ class MailboxScreen(ft.UserControl):
 
         def retrieve_emails_button_clicked(e):
             EmailPostOfficer.EmailPostOfficer(account=self.account).receive_mail()
+            with open('res/app_management/unseen_messages_info.json','r') as json_file:
+                self.unseen_messages_data=json.load(json_file)
             load_message_paths()
             load_message_items()
             self.update()
@@ -145,7 +181,7 @@ class MailboxScreen(ft.UserControl):
             icon="CLOUD_DOWNLOAD_OUTLINED",
             on_click=retrieve_emails_button_clicked,
         )
-        
+            
         return ft.Column(            
             controls=[
                 ft.Row(
