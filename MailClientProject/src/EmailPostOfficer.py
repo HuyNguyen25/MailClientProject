@@ -167,7 +167,7 @@ class EmailPostOfficer:
             retr_size = int(self.__get_retrieve_size(list_response, i))
 
             # Receive every segment of 1024 bytes
-            for i in range(0,ceil(retr_size/1024)):
+            for i in range(0,floor(retr_size/1024)+1):
                 data_segment=pop3_socket.recv(1024)
                 if data_segment:
                     data+=data_segment
